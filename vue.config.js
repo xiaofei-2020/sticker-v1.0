@@ -15,4 +15,10 @@ module.exports = {
       chunks: ["chunk-vendors", "chunk-common", "index"],
     },
   },
+  devServer: {
+    hot: true, // 保存自动刷新网页
+    open: true,
+    port: 8080,
+    host: "0.0.0.0",
+  },
 };

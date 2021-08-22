@@ -44,4 +44,3 @@ export const getFile = (data, params) => {
     params,
   });
 };
-

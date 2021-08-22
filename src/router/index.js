@@ -7,12 +7,12 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "home",
     component: Home,
   },
   {
     path: "/about",
-    name: "About",
+    name: "about",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -26,10 +26,18 @@ const routes = [
       import(/* webpackChunkName: "GenGif" */ "../views/GenGif.vue"),
   },
   {
+    path: "/gen-img",
+    name: "gen-img",
+    component: () =>
+      import(/* webpackChunkName: "gen-img" */ "../views/GenImg"),
+  },
+
+  {
+    // 放最后
     path: "*",
     name: "not-found",
     component: () =>
-      import(/* webpackChunkName: "gen-img" */ "../views/NotFound"),
+      import(/* webpackChunkName: "NotFound" */ "../views/NotFound"),
   },
 ];
 

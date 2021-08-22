@@ -2,7 +2,9 @@
   <div id="app">
     <nav>
       <router-link to="/">主页</router-link> |
-      <router-link to="/gen-gif">制作gif</router-link>
+      <router-link to="/gen-gif">制作gif</router-link> |
+      <router-link to="/about">表情模板</router-link> |
+      <router-link to="/gen-img">表情制作</router-link>
     </nav>
     <main>
       <router-view />
@@ -59,6 +61,4 @@ export default {
     margin: 0 auto;
   }
 }
-
-
 </style>
