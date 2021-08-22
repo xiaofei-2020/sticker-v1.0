@@ -35,3 +35,13 @@ export const getUserInfo = (data, params) => {
     params,
   });
 };
+
+// 下载
+export const getFile = (data, params) => {
+  return axios({
+    url: "/file",
+    data,
+    params,
+  });
+};
+

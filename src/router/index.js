@@ -19,6 +19,18 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  {
+    path: "/gen-gif",
+    name: "gen-gif",
+    component: () =>
+      import(/* webpackChunkName: "GenGif" */ "../views/GenGif.vue"),
+  },
+  {
+    path: "*",
+    name: "not-found",
+    component: () =>
+      import(/* webpackChunkName: "gen-img" */ "../views/NotFound"),
+  },
 ];
 
 const router = new VueRouter({
