@@ -2,6 +2,7 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <el-button type="primary">主要按钮</el-button>
+    <el-button type="primary">测试按钮</el-button>
   </div>
 </template>
 
