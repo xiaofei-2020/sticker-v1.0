@@ -3,7 +3,7 @@
     <nav>
       <router-link to="/">主页</router-link> |
       <router-link to="/about">表情模板</router-link> |
-      <router-link to="/generate">表情制作</router-link>
+      <router-link to="/gen-img">表情制作</router-link>
     </nav>
 
     <router-view />
