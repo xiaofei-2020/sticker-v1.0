@@ -3,18 +3,14 @@
     <!-- <img src="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" alt=""> -->
     <!-- <a href="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" download="">下载</a> -->
     <div class="gen-gif-content">
-      <div>效果图：</div>
+      <div>原图：</div>
       <div>
         <img :src="customMeme" alt="" />
-        <canvas
+        <!-- <canvas
           ref="drawBoard"
           :width="gifMetaData.width"
           :height="gifMetaData.height"
         >
-          你的浏览器不支持 canvas，请升级你的浏览器。
-        </canvas>
-        <!-- <canvas ref="drawBoard2" :width="gifMetaData.width" :height="gifMetaData.height">
-          你的浏览器不支持 canvas，请升级你的浏览器。
         </canvas> -->
       </div>
 
@@ -84,8 +80,6 @@ export default {
     },
     renderGif(ctx) {
       this.timer = setInterval(() => {
-        // this.gifMetaData.width = this.frameList[0].dims.width;
-        // this.gifMetaData.height = this.frameList[0].dims.height;
         this.drawPatch(ctx, this.frameList[this.frameIndex]);
         if (this.frameIndex < this.frameList.length - 1) {
           this.frameIndex++;
@@ -110,6 +104,16 @@ export default {
         dims.top
       );
       // this.drawPatch(tempCtx, frame);
+
+      return tempCanvas.toDataURL();
+    },
+    fullFrameToDateURL(frameIndex) {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = this.gifMetaData.width;
+      tempCanvas.height = this.gifMetaData.height;
+      const tempCtx = tempCanvas.getContext("2d");
+
+      this.drawFullFrame(tempCtx, frameIndex);
 
       return tempCanvas.toDataURL();
     },
@@ -146,84 +150,53 @@ export default {
         );
       }
     },
-    drawFullFrame(ctx, frame) {
-      let typeArr = new Uint8ClampedArray(0);
-      frame.pixels.forEach((colorIndex) => {
-        // if(frame.transparentIndex === colorIndex) {
-        //   arr.push(0,0,0,0);
-        // } else {
-        //   arr.push(...frame.colorTable[colorIndex], 1);
-        // }
-        let tempTypeArr = new Uint8ClampedArray(4);
-        tempTypeArr.set(frame.colorTable[colorIndex]);
-        tempTypeArr.set([1], 3);
+    generateFrame(frame) {
+      const totalPixels = frame.pixels.length;
+      const frameData = new Uint8ClampedArray(totalPixels * 4);
+      for (var i = 0; i < totalPixels; i++) {
+        const pos = i * 4;
+        const colorIndex = frame.pixels[i];
+        const color = frame.colorTable[colorIndex] || [0, 0, 0];
+        frameData[pos] = color[0];
+        frameData[pos + 1] = color[1];
+        frameData[pos + 2] = color[2];
+        frameData[pos + 3] = frame.colorTable[colorIndex] ? 255 : 0;
+      }
 
-        let newTypeArr = new Uint8ClampedArray(
-          typeArr.length + tempTypeArr.length
-        );
-        newTypeArr.set(typeArr);
-        newTypeArr.set(tempTypeArr, typeArr.length);
-        typeArr = newTypeArr;
-      });
+      return frameData;
+    },
+    drawFullFrame(ctx, frameIndex) {
+      const tempCanvas = document.createElement("canvas");
+      tempCanvas.width = this.gifMetaData.width;
+      tempCanvas.height = this.gifMetaData.height;
+      const tempCtx = tempCanvas.getContext("2d");
 
-      // let full = new Uint8ClampedArray(arr);
-      console.log(typeArr);
-      ctx.clearRect(0, 0, frame.dims.width, frame.dims.height);
-      ctx.putImageData(
-        new ImageData(typeArr, frame.dims.width, frame.dims.height),
-        frame.dims.left,
-        frame.dims.top
-      );
+      for (let i = 0; i <= frameIndex; i++) {
+        // 覆盖到目标帧为止
+        this.drawPatch(tempCtx, this.frameList[i]);
+      }
+
+      ctx.drawImage(tempCanvas, 0, 0);
     },
     // 选择图片
     async handleUploadChange(file) {
-      console.log(this.$refs.drawBoard);
-
-      this.customMeme = await getBase64(file.raw);
-      this.frameList = await this.getGifFrames(file.raw);
+      this.customMeme = await getBase64(file.raw); // 预览gif
+      this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
 
       this.frameList.forEach((fItem, fIndex) => {
+        // 每一帧图展开预览
         fItem.id = fIndex;
-        fItem.preview = this.frameToDateURL(fItem);
+        fItem.preview = this.fullFrameToDateURL(fIndex);
       });
-
-      let ctx = this.$refs.drawBoard.getContext("2d");
-      this.gifMetaData.width = this.frameList[0].dims.width;
-      this.gifMetaData.height = this.frameList[0].dims.height;
-      console.log(this.frameList[1]);
-      this.$nextTick(() => {
-        //  var imgData=ctx.createImageData(100,100);
-        // for (var i=0;i<imgData.data.length;i+=4)
-        //   {
-        //   imgData.data[i+0]=255;
-        //   imgData.data[i+1]=0;
-        //   imgData.data[i+2]=0;
-        //   imgData.data[i+3]=255;
-        //   }
-        // ctx.putImageData(imgData,10,10);
-
-        // this.drawPatch(ctx, this.frameList[0]);
-        // let ctx2 = this.$refs.drawBoard2.getContext("2d");
-        // this.drawFullFrame(ctx2, this.frameList[0]);
-        this.renderGif(ctx);
-
-        // ctx.font = "48px serif";
-        // ctx.fillText('试试啊', 50, 200);
-      });
-
-      // this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
 
       this.$refs.upload.clearFiles();
     },
     cancelSelect() {
       this.customMeme = "";
+      this.frameList = [];
     },
   },
-  async created() {
-    // this.getGifFrames(this.gif)
-    // let res = await getBase64(this.gif);
-    // this.gifBase64 = res;
-  },
+  created() {},
 };
 </script>
 
