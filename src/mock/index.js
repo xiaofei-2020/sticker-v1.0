@@ -16,5 +16,19 @@ function getUserInfo(options) {
   };
 }
 
+function getFile(options) {
+  console.log(options);
+  return {
+    code: 0,
+    msg: "ok",
+    success: true,
+
+    data: {
+      file: require("../../public/1.gif"),
+    },
+  };
+}
+
 // 拦截 Ajax 请求
 Mock.mock(baseURL + "/userInfo", "get", getUserInfo);
+Mock.mock(baseURL + "/file", "get", getFile);

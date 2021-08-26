@@ -2,11 +2,14 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import "./assets/css/base.less";
+import "./assets/css/common.less";
 import "./mock";
 
-import { Button } from "element-ui";
+import { Button, Upload, Input } from "element-ui";
 
 Vue.use(Button);
+Vue.use(Upload);
+Vue.use(Input);
 
 Vue.config.productionTip = false;
 
