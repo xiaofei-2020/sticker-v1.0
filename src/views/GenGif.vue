@@ -12,6 +12,8 @@
           :height="gifMetaData.height"
         >
         </canvas> -->
+        <div>合成后：</div>
+        <img :src="gif" alt="" />
       </div>
 
       <div class="action flex">
@@ -37,10 +39,17 @@
         >
       </div>
     </div>
-
-    <ul class="frame-list">
+    <div>
+      <el-button @click="generateGif">生成</el-button>
+    </div>
+    <!-- <ul class="frame-list">
       <li v-for="fItem in frameList" :key="fItem.id">
         <img :src="fItem.preview" alt="" />
+      </li>
+    </ul> -->
+    <ul class="frame-list">
+      <li v-for="fItem in test" :key="fItem">
+        <img :src="fItem" alt="" />
       </li>
     </ul>
   </div>
@@ -49,17 +58,24 @@
 <script>
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
-
+import GIF from "../../public/gif.js";
+// const GIF = require(process.env.BASE_URL + 'gif.js');
 export default {
   name: "GenGif",
   data() {
     return {
-      gif: "https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif",
+      gif: "",
 
       ctx: null,
       gifMetaData: {
         width: 300,
         height: 300,
+        textList:[
+          { start: 1, end: 10, value: '不修不成仙，修了嗨翻天' },
+          { start: 11, end: 20, value: '那就这么做，是福不是祸' },
+          { start: 21, end: 30, value: '汽车要加油，我要喝红牛' },
+          { start: 31, end: 40, value: '人在天上飞，也可喝咖啡' },
+        ]
       },
 
       currentFrame: "", // 当前帧
@@ -69,6 +85,8 @@ export default {
       frameList: [],
       timer: null,
       frameIndex: 0,
+
+      test: []
     };
   },
   methods: {
@@ -117,6 +135,7 @@ export default {
 
       return tempCanvas.toDataURL();
     },
+    // 绘制补丁帧
     drawPatch(ctx, frame) {
       let dims = frame.dims;
       // console.log(imageData);
@@ -165,6 +184,7 @@ export default {
 
       return frameData;
     },
+    // 绘制完整画面
     drawFullFrame(ctx, frameIndex) {
       const tempCanvas = document.createElement("canvas");
       tempCanvas.width = this.gifMetaData.width;
@@ -183,6 +203,9 @@ export default {
       this.customMeme = await getBase64(file.raw); // 预览gif
       this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
 
+      this.gifMetaData.width = this.frameList[0].dims.width;
+      this.gifMetaData.height = this.frameList[0].dims.height;
+
       this.frameList.forEach((fItem, fIndex) => {
         // 每一帧图展开预览
         fItem.id = fIndex;
@@ -195,6 +218,88 @@ export default {
       this.customMeme = "";
       this.frameList = [];
     },
+    blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+          resolve(e.target.result);
+        };
+        // readAsDataURL
+        fileReader.readAsDataURL(blob);
+        fileReader.onerror = () => {
+          reject(new Error('blobToBase64 error'));
+        };
+      });
+    },
+    async generateGif(){
+      let startTime = new Date().getTime();
+      //process.env.BASE_URL 
+      // const GIF = require('../../public/gif.js');
+
+      let gif = new GIF({
+        workers: 6,
+        quality: 10
+      })
+
+    
+      // this.frameList.forEach((frame, frameIndex)=>{
+      for(let frameIndex in this.frameList ){
+        let frame = this.frameList[frameIndex];
+
+        
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = this.gifMetaData.width;
+        tempCanvas.height = this.gifMetaData.height;
+        const tempCtx = tempCanvas.getContext("2d");
+
+        
+        // this.test.push(tempCanvas.toDataURL());
+        // this.test.push(frame.preview)
+
+        // 绘制图片
+        const loadImg = (base64) => {
+          return new Promise((resolve, reject) => {
+            let img = new Image();
+            img.onload = () => {
+              resolve(img)
+            }
+
+            img.onerror = () => {
+              reject(new Error('loadImg error'));
+            };
+            
+            img.src = base64;
+          });
+        }
+
+        let imgEl = await loadImg(frame.preview);
+
+        tempCtx.drawImage(imgEl, 0, 0);
+
+        // 绘制文字
+        let text = this.gifMetaData.textList.find(item=>item.start <= frameIndex && frameIndex <= item.end);
+        if(text){
+          tempCtx.font = "16px sans-serif";
+          let textWidth = this.gifMetaData.width - 24;
+          tempCtx.textAlign = 'center';
+          tempCtx.fillText(text.value, textWidth / 2, this.gifMetaData.height - 28, textWidth);
+          // tempCtx.fillText(text.value, 10 , 10, textWidth)
+        }
+
+        gif.addFrame(tempCanvas, { copy: true, delay: frame.delay });
+      }
+      // });
+      
+      gif.on('finished', async (blob)=> {
+        // window.open(URL.createObjectURL(blob));
+        
+        this.gif = await this.blobToBase64(blob);
+        let endTime = new Date().getTime();
+        console.log(`合成完毕，耗时=${endTime - startTime}毫秒` );
+      });
+
+      gif.render();
+    }
   },
   created() {},
 };
