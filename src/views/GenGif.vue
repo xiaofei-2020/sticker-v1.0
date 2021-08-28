@@ -58,7 +58,8 @@
 <script>
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
-import GIF from "../../public/gif.js";
+// import GIF from "../../public/gif.js";
+import GIF from "@/assets/js/gif.js";
 // const GIF = require(process.env.BASE_URL + 'gif.js');
 export default {
   name: "GenGif",
@@ -70,13 +71,53 @@ export default {
       gifMetaData: {
         width: 300,
         height: 300,
-        textList:[
-          { start: 1, end: 10, value: '不修不成仙，修了嗨翻天' },
-          { start: 11, end: 20, value: '那就这么做，是福不是祸' },
-          { start: 21, end: 30, value: '汽车要加油，我要喝红牛' },
-          { start: 31, end: 40, value: '人在天上飞，也可喝咖啡' },
-        ]
+        textList: [
+          { start: 1, end: 10, x: 10, y: 200, color: "#fff", value: "好啊" },
+          {
+            start: 11,
+            end: 20,
+            x: 10,
+            y: 200,
+            color: "#fff",
+            value: "像你这样的群主",
+          },
+          {
+            start: 21,
+            end: 30,
+            x: 10,
+            y: 200,
+            color: "#fff",
+            value: "就算再来十个",
+          },
+          {
+            start: 31,
+            end: 40,
+            x: 10,
+            y: 200,
+            color: "#fff",
+            value: "成千上万个",
+          },
+        ],
       },
+
+      // content: { // 动态图
+      //   width: 300,
+      //   height: 300,
+      //   textList:[
+      //     { start: 1, end: 10, x: 10, y: 200, color: '#fff', value: '好啊' },
+      //     { start: 11, end: 20, x: 10, y: 200, color: '#fff',  value: '像你这样的群主' },
+      //     { start: 21, end: 30, x: 10, y: 200, color: '#fff',  value: '就算再来十个' },
+      //     { start: 31, end: 40, x: 10, y: 200, color: '#fff',  value: '成千上万个' },
+      //   ]
+      // },
+
+      // content: { // 静态图
+      //   width: 300,
+      //   height: 300,
+      //   textList:[
+      //     { x: 10, y: 200, color: '#fff', value: '在吗' },
+      //   ]
+      // },
 
       currentFrame: "", // 当前帧
 
@@ -86,7 +127,7 @@ export default {
       timer: null,
       frameIndex: 0,
 
-      test: []
+      test: [],
     };
   },
   methods: {
@@ -227,32 +268,29 @@ export default {
         // readAsDataURL
         fileReader.readAsDataURL(blob);
         fileReader.onerror = () => {
-          reject(new Error('blobToBase64 error'));
+          reject(new Error("blobToBase64 error"));
         };
       });
     },
-    async generateGif(){
+    async generateGif() {
       let startTime = new Date().getTime();
-      //process.env.BASE_URL 
+      //process.env.BASE_URL
       // const GIF = require('../../public/gif.js');
 
       let gif = new GIF({
         workers: 6,
-        quality: 10
-      })
+        quality: 10,
+      });
 
-    
       // this.frameList.forEach((frame, frameIndex)=>{
-      for(let frameIndex in this.frameList ){
+      for (let frameIndex in this.frameList) {
         let frame = this.frameList[frameIndex];
 
-        
         const tempCanvas = document.createElement("canvas");
         tempCanvas.width = this.gifMetaData.width;
         tempCanvas.height = this.gifMetaData.height;
         const tempCtx = tempCanvas.getContext("2d");
 
-        
         // this.test.push(tempCanvas.toDataURL());
         // this.test.push(frame.preview)
 
@@ -261,45 +299,52 @@ export default {
           return new Promise((resolve, reject) => {
             let img = new Image();
             img.onload = () => {
-              resolve(img)
-            }
+              resolve(img);
+            };
 
             img.onerror = () => {
-              reject(new Error('loadImg error'));
+              reject(new Error("loadImg error"));
             };
-            
+
             img.src = base64;
           });
-        }
+        };
 
         let imgEl = await loadImg(frame.preview);
 
         tempCtx.drawImage(imgEl, 0, 0);
 
         // 绘制文字
-        let text = this.gifMetaData.textList.find(item=>item.start <= frameIndex && frameIndex <= item.end);
-        if(text){
+        let text = this.gifMetaData.textList.find(
+          (item) => item.start <= frameIndex && frameIndex <= item.end
+        );
+        if (text) {
           tempCtx.font = "16px sans-serif";
           let textWidth = this.gifMetaData.width - 24;
-          tempCtx.textAlign = 'center';
-          tempCtx.fillText(text.value, textWidth / 2, this.gifMetaData.height - 28, textWidth);
+          tempCtx.textAlign = "center";
+          tempCtx.fillText(
+            text.value,
+            textWidth / 2,
+            this.gifMetaData.height - 28,
+            textWidth
+          );
           // tempCtx.fillText(text.value, 10 , 10, textWidth)
         }
 
         gif.addFrame(tempCanvas, { copy: true, delay: frame.delay });
       }
       // });
-      
-      gif.on('finished', async (blob)=> {
+
+      gif.on("finished", async (blob) => {
         // window.open(URL.createObjectURL(blob));
-        
+
         this.gif = await this.blobToBase64(blob);
         let endTime = new Date().getTime();
-        console.log(`合成完毕，耗时=${endTime - startTime}毫秒` );
+        console.log(`合成完毕，耗时=${endTime - startTime}毫秒`);
       });
 
       gif.render();
-    }
+    },
   },
   created() {},
 };

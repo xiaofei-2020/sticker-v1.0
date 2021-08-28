@@ -44,3 +44,23 @@ export const getFile = (data, params) => {
     params,
   });
 };
+
+// 资源
+export const resourcesApi = (method, data, params) => {
+  return axios({
+    url: "/resources",
+    method,
+    data,
+    params,
+  });
+};
+
+// 收藏
+export const collectionApi = (method, data, params) => {
+  return axios({
+    url: "/collection",
+    method,
+    data,
+    params,
+  });
+};
