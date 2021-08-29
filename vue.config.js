@@ -21,16 +21,16 @@ module.exports = {
     port: 8080,
     host: "0.0.0.0",
   },
-  chainWebpack: config => {
+  chainWebpack: (config) => {
     config.module
-      .rule('worker')
+      .rule("worker")
       .test(/\.worker\.js$/)
-      .use('worker')
-      .loader('worker-loader')
+      .use("worker")
+      .loader("worker-loader")
       .options({
-        inline: 'fallback'
-      })
-    config.output.globalObject('this')
+        inline: "fallback",
+      });
+    config.output.globalObject("this");
   },
-  parallel: false
+  parallel: false,
 };

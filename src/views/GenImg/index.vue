@@ -174,6 +174,7 @@ export default {
     width: 50%;
     border-left: 1px dashed #000;
     border-right: 1px dashed #000;
+    text-align: center;
     #draw-board {
       box-shadow: 0 0 5px #ccc;
     }
