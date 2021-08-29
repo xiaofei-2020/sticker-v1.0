@@ -3,7 +3,7 @@
     <nav class="flex jc-sb ai-c">
       <div class="logo">LOGO</div>
       <ul class="link flex">
-        <router-link to="/" tag="li" class="flex ai-c">主页</router-link>
+        <router-link to="/" tag="li" class="flex ai-c" exact>主页</router-link>
         <router-link to="/maker" tag="li" class="flex ai-c"
           >表情制作</router-link
         >

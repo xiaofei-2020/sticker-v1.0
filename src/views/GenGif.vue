@@ -1,101 +1,222 @@
 <template>
-  <div id="gen-gif">
+  <div id="gen-gif" class="flex ai-c">
     <!-- <img src="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" alt=""> -->
     <!-- <a href="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" download="">下载</a> -->
-    <div class="gen-gif-content">
-      <div>原图：</div>
-      <div>
-        <img :src="customMeme" alt="" />
-        <!-- <canvas
-          ref="drawBoard"
-          :width="gifMetaData.width"
-          :height="gifMetaData.height"
-        >
-        </canvas> -->
-        <div>合成后：</div>
-        <img :src="gif" alt="" />
+    <div class="gen-gif-preview flex">
+      <div class="img-box">
+        <h2>表情制作</h2>
+        <img :src="gif || customGif || defaultGif" alt="" />
+        <div class="action flex">
+          <el-upload
+            ref="upload"
+            action=""
+            :auto-upload="false"
+            :show-file-list="false"
+            accept=".png,.jpg,.gif"
+            :on-change="handleUploadChange"
+            :limit="1"
+          >
+            <el-button type="text">{{
+              customGif ? "重新选择" : "选择本地图片"
+            }}</el-button>
+          </el-upload>
+          <el-button
+            v-show="customGif"
+            type="text"
+            style="margin-left: 10px"
+            @click="cancelSelect"
+            >取消选择</el-button
+          >
+        </div>
       </div>
-
-      <div class="action flex">
-        <el-upload
-          ref="upload"
-          action=""
-          :auto-upload="false"
-          :show-file-list="false"
-          accept=".png,.jpg,.gif"
-          :on-change="handleUploadChange"
-          :limit="1"
-        >
-          <el-button type="text">{{
-            customMeme ? "重新选择" : "选择本地图片"
-          }}</el-button>
-        </el-upload>
-        <el-button
-          v-show="customMeme"
-          type="text"
-          style="margin-left: 10px"
-          @click="cancelSelect"
-          >取消选择</el-button
-        >
+      <div class="img-box" v-if="currentFramePreview">
+        <h2>逐帧查看</h2>
+        <img :src="currentFramePreview" alt="" />
+        <!-- <img 
+          v-for="(imgItem,imgIndex) in frameList" 
+          :key="imgIndex" 
+          v-show="currentFrameIndex === imgIndex" 
+          :src="imgItem.preview" alt="" /> -->
+        <div class="action flex ai-c">
+          <div style="margin-right: 20px">当前帧</div>
+          <el-slider
+            style="flex: 1"
+            v-model="currentFrameIndex"
+            :max="frameList.length - 1 > 0 ? frameList.length - 1 : 1"
+            :format-tooltip="(value) => ++value"
+            @input="changeFrame"
+          ></el-slider>
+          <div style="margin-left: 20px">
+            {{ `${currentFrameIndex + 1} / ${frameList.length}` }}
+          </div>
+        </div>
       </div>
     </div>
+
+    <div class="gen-gif-content">
+      <h3>内容编辑</h3>
+      <div
+        class="text-item"
+        v-for="(item, index) in gifMetaData.textList"
+        :key="item.key"
+      >
+        <label :for="'text' + index">请输入第 {{ index + 1 }} 句内容</label>
+        <div class="flex ai-c" style="line-height: 14px">
+          <el-input
+            :id="'text' + index"
+            class="el-text"
+            v-model="item.value"
+            :maxlength="15"
+          ></el-input>
+          <template v-if="currentFramePreview">
+            <el-input
+              class="el-frame-index"
+              v-model="item.start"
+              type="number"
+              @blur="
+                item.start = formatNumber(item.start, 1, frameList.length || 1)
+              "
+            ></el-input>
+            &nbsp;~&nbsp;
+            <el-input
+              class="el-frame-index"
+              v-model="item.end"
+              type="number"
+              @blur="item.end = formatNumber(item.end, 1, frameList.length || 1)"
+            ></el-input>
+            &nbsp;帧
+            <el-button
+              class="el-del-text-btn"
+              icon="el-icon-delete"
+              circle
+              @click="handleDeleteText(index)"
+            ></el-button>
+          </template>
+        </div>
+      </div>
+      <div v-if="currentFramePreview" class="flex ai-c" style="margin: 4px 0 16px 0">
+        <el-button
+          class="el-add-text-btn"
+          type="primary"
+          icon="el-icon-plus"
+          plain
+          @click="handleAddText"
+          >添加内容</el-button
+        >
+        <div class="flex ai-c">
+          <label for="blackRect" style="margin: 0 8px">添加黑边</label>
+          <el-switch id="blackRect" v-model="gifMetaData.blackRect">
+          </el-switch>
+        </div>
+      </div>
+
+      <template v-if="currentFramePreview">
+      <h3>文本设置</h3>
+      <div class="text-set-wrap">
+        <!-- <div class="mr-12"> -->
+          <label for="fontSize">字号</label>
+          <el-input-number
+            class="mr-16"
+            id="fontSize"
+            size="mini"
+            :value="
+              gifMetaData.textList[0] ? gifMetaData.textList[0].fontSize : 1
+            "
+            :min="1"
+            @change="(value)=>handleChangeTextItem('fontSize', value)"
+          ></el-input-number>
+        <!-- </div>
+        <div> -->
+          <label for="strokeWidth">文字描边</label>
+          <el-input-number
+            id="strokeWidth"
+            size="mini"
+            :value="
+              gifMetaData.textList[0] ? gifMetaData.textList[0].strokeWidth : 0.1
+            "
+            :step="0.1"
+            :min="0"
+            @change="(value)=>handleChangeTextItem('strokeWidth', value)"
+          ></el-input-number>
+        <!-- </div> -->
+      </div>
+      </template>
+    </div>
+
+    <section class="gen-gif-font">
+      
+    </section>
+
     <div>
       <el-button @click="generateGif">生成</el-button>
+      <el-button v-if="gif" @click="download(gif, 'file')">下载</el-button>
+      <el-button>收藏</el-button>
     </div>
     <!-- <ul class="frame-list">
       <li v-for="fItem in frameList" :key="fItem.id">
         <img :src="fItem.preview" alt="" />
       </li>
     </ul> -->
-    <ul class="frame-list">
+    <!-- <ul class="frame-list">
       <li v-for="fItem in test" :key="fItem">
         <img :src="fItem" alt="" />
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
 <script>
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
-// import GIF from "../../public/gif.js";
-import GIF from "@/assets/js/gif.js";
-// const GIF = require(process.env.BASE_URL + 'gif.js');
+import GIF from "../../public/gif.js";
+// import GIF from "@/assets/js/gif.js";
+
 export default {
   name: "GenGif",
   data() {
     return {
-      gif: "",
+      gif: "", // 作品
+      defaultGif: require("@/assets/tempImg/1.gif"), //
+      customGif: "", // 自定义gif
 
       ctx: null,
       gifMetaData: {
         width: 300,
         height: 300,
+        blackRect: true, // 黑边
         textList: [
-          { start: 1, end: 10, x: 10, y: 200, color: "#fff", value: "好啊" },
           {
-            start: 11,
-            end: 20,
+            key: 1, // 临时key
+            start: 2,
+            end: 10,
             x: 10,
             y: 200,
             color: "#fff",
-            value: "像你这样的群主",
+            fontSize: 16,
+            strokeWidth: 0.5, // 描边宽度
+            value: "每个月的生活费够用吗？",
           },
           {
-            start: 21,
-            end: 30,
+            key: 2,
+            start: 12,
+            end: 17,
             x: 10,
             y: 200,
             color: "#fff",
-            value: "就算再来十个",
+            fontSize: 16,
+            strokeWidth: 0.5, // 描边宽度
+            value: "够用",
           },
           {
-            start: 31,
-            end: 40,
+            key: 3,
+            start: 19,
+            end: 24,
             x: 10,
             y: 200,
             color: "#fff",
-            value: "成千上万个",
+            fontSize: 16,
+            strokeWidth: 0.5, // 描边宽度
+            value: "真的吗？",
           },
         ],
       },
@@ -119,18 +240,28 @@ export default {
       //   ]
       // },
 
-      currentFrame: "", // 当前帧
-
-      defaultGif: "",
-      customMeme: "",
+      currentFramePreview: "", // 当前帧
+      currentFrameIndex: 0,
       frameList: [],
       timer: null,
-      frameIndex: 0,
 
-      test: [],
+      frameIndex: 0,
+      // test: [],
     };
   },
   methods: {
+    formatNumber(value, min, max) {
+      value = parseInt(value);
+      if (isNaN(value)) {
+        value = min;
+      }
+      if (value < min) {
+        value = min;
+      } else if (value > max) {
+        value = max;
+      }
+      return value;
+    },
     getGifFrames(gif) {
       return gif
         .arrayBuffer()
@@ -138,6 +269,7 @@ export default {
         .then((gif) => decompressFrames(gif, true));
     },
     renderGif(ctx) {
+      // canvas 中播放gif
       this.timer = setInterval(() => {
         this.drawPatch(ctx, this.frameList[this.frameIndex]);
         if (this.frameIndex < this.frameList.length - 1) {
@@ -241,7 +373,9 @@ export default {
     },
     // 选择图片
     async handleUploadChange(file) {
-      this.customMeme = await getBase64(file.raw); // 预览gif
+      this.cancelSelect();
+
+      this.customGif = await getBase64(file.raw); // 预览gif
       this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
 
       this.gifMetaData.width = this.frameList[0].dims.width;
@@ -253,11 +387,58 @@ export default {
         fItem.preview = this.fullFrameToDateURL(fIndex);
       });
 
+      this.currentFramePreview = this.frameList[0].preview;
+      this.currentFrameIndex = 0;
+
       this.$refs.upload.clearFiles();
     },
     cancelSelect() {
-      this.customMeme = "";
+      this.customGif = "";
+      this.gif = "";
+      this.currentFramePreview = "";
+      this.currentFrameIndex = 0;
       this.frameList = [];
+    },
+    changeFrame(newValue) {
+      // console.log(newValue);
+      this.currentFramePreview = this.frameList[newValue]?.preview || "";
+      // console.log(this.currentFrameIndex);
+    },
+    handleAddText() {
+      if(!this.gifMetaData.textList[0]){
+        let text = {
+          key: new Date().getTime(),
+          start: 1,
+          end: 2,
+          x: undefined,
+          y: undefined,
+          color: "#fff",
+          fontSize: 18,
+          strokeWidth: 0.5, // 描边宽度
+          value: "",
+        };
+
+        this.gifMetaData.textList.push(text);
+        return
+      }
+      // ================================
+      let text = JSON.parse(JSON.stringify(this.gifMetaData.textList[0]));
+
+      Object.assign(text, {
+        key: new Date().getTime(),
+        value: ""
+      });
+
+      this.gifMetaData.textList.push(text);
+    },
+
+    handleDeleteText(textIndex) {
+      this.gifMetaData.textList.splice(textIndex, 1);
+    },
+    handleChangeTextItem(key, value){
+      this.gifMetaData.textList.forEach(item=>{
+        item[key] = value;
+      });
     },
     blobToBase64(blob) {
       return new Promise((resolve, reject) => {
@@ -274,15 +455,12 @@ export default {
     },
     async generateGif() {
       let startTime = new Date().getTime();
-      //process.env.BASE_URL
-      // const GIF = require('../../public/gif.js');
 
       let gif = new GIF({
         workers: 6,
         quality: 10,
       });
 
-      // this.frameList.forEach((frame, frameIndex)=>{
       for (let frameIndex in this.frameList) {
         let frame = this.frameList[frameIndex];
 
@@ -314,26 +492,52 @@ export default {
 
         tempCtx.drawImage(imgEl, 0, 0);
 
-        // 绘制文字
+        // 添加黑边================
+        if (this.gifMetaData.blackRect) {
+          tempCtx.fillRect(
+            0,
+            this.gifMetaData.height - (this.gifMetaData.textList[0].fontSize + 10),
+            this.gifMetaData.width,
+            this.gifMetaData.textList[0].fontSize + 10
+          );
+        }
+
+        // =======================
+
+        // 绘制文字================
         let text = this.gifMetaData.textList.find(
-          (item) => item.start <= frameIndex && frameIndex <= item.end
+          (item) => +item.start <= frameIndex && frameIndex <= +item.end
         );
         if (text) {
-          tempCtx.font = "16px sans-serif";
-          let textWidth = this.gifMetaData.width - 24;
-          tempCtx.textAlign = "center";
+          tempCtx.font = `bold ${text.fontSize}px sans-serif`;
+
+          let textWidth = this.gifMetaData.width;
+
+          tempCtx.textAlign = "center"; // 水平居中
+          tempCtx.fillStyle = text.color; // 文字颜色
           tempCtx.fillText(
             text.value,
-            textWidth / 2,
-            this.gifMetaData.height - 28,
+            textWidth / 2, // 水平居中
+            this.gifMetaData.height - 8,
             textWidth
           );
-          // tempCtx.fillText(text.value, 10 , 10, textWidth)
+
+          if( text.strokeWidth > 0 ){
+            tempCtx.lineWidth = text.strokeWidth;
+            tempCtx.strokeStyle = "#000"; // 轮廓颜色
+            tempCtx.strokeText(
+              text.value,
+              textWidth / 2, // 水平居中
+              this.gifMetaData.height - 8,
+              textWidth
+            );
+          }
+          
         }
 
         gif.addFrame(tempCanvas, { copy: true, delay: frame.delay });
       }
-      // });
+      //==========================
 
       gif.on("finished", async (blob) => {
         // window.open(URL.createObjectURL(blob));
@@ -345,6 +549,12 @@ export default {
 
       gif.render();
     },
+    download(base64, fileName) {
+      const link = document.createElement("a");
+      link.href = base64;
+      link.download = fileName;
+      link.click();
+    },
   },
   created() {},
 };
@@ -352,9 +562,21 @@ export default {
 
 <style lang="less" scoped>
 #gen-gif {
-  .gen-gif-content {
-    width: 300px;
-    margin: 0 auto;
+  flex-direction: column;
+  .gen-gif-preview {
+    // width: 300px;
+    // margin: 0 auto;
+    h2 {
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .img-box {
+      max-width: 300px;
+      margin-right: 20px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
     img {
       max-width: 100%;
     }
@@ -362,7 +584,53 @@ export default {
       justify-content: flex-end;
     }
   }
+  /deep/ .gen-gif-content {
+    margin-bottom: 16px;
+    h3 {
+      margin-bottom: 8px;
+    }
+    .text-item {
+      margin-bottom: 8px;
+      label {
+        color: #909399;
+      }
+      .el-text {
+        width: 350px;
+        margin-right: 8px;
+        .el-input__inner {
+          height: 32px;
+        }
+      }
+      .el-frame-index {
+        width: 56px;
+        .el-input__inner {
+          height: 32px;
+        }
+        /* 普通IE浏览器 样式清除 */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none !important;
+        }
+        /* 火狐浏览器样式清除 */
+        input[type="number"] {
+          -moz-appearance: textfield;
+        }
+      }
+      .el-del-text-btn {
+        margin-left: 8px;
+        border: 0;
+      }
+    }
+    .el-add-text-btn {
+      width: 350px;
+    }
 
+    .text-set-wrap{
+      label {
+        margin-right: 8px;
+      }
+    }
+  }
   .frame-list {
     display: grid;
     gap: 12px;
