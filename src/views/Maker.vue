@@ -4,12 +4,12 @@
       <el-input
         placeholder="输入关键字搜索"
         v-model="keyword"
-        @keyup.enter.native="handleSearch({ keyword, page: currentPage - 1 })"
+        @keyup.enter.native="handleSearch({ keyword })"
       >
         <template #append>
           <el-button
             icon="el-icon-search"
-            @click="handleSearch({ keyword, page: currentPage - 1 })"
+            @click="handleSearch({ keyword })"
           ></el-button>
         </template>
       </el-input>
@@ -67,7 +67,7 @@ export default {
     async getMemeTemplate() {
       let res = await resourcesApi("get", {
         type: "TEMPLATE",
-        page: this.currentPage - 1,
+        page: this.currentPage,
         pageSize: this.pageSize,
       });
 
@@ -75,28 +75,22 @@ export default {
         this.templateList = res.data.data;
       }
     },
-    // 搜索
-    async handleSearch({ keyword, page }) {
+    // 跳转搜索页
+    async handleSearch({ keyword }) {
       keyword = keyword.trim();
       let [keywordRes] = await tryCatch(formValidator("keywordRule", keyword));
       if (keywordRes === null) {
         return;
       }
 
-      let res = await resourcesApi("get", {
-        type: "TEMPLATE",
-        keyword,
-        page: page,
-        pageSize: this.pageSize,
+      this.$router.push({
+        name: "search",
+        query: { keyword, type: "TEMPLATE" },
       });
-
-      if (res.data.success) {
-        this.templateList = res.data.data;
-      }
     },
     // 切换页
-    handleCurrentChange(currentPage) {
-      this.handleSearch({ keyword: this.keyword, page: currentPage - 1 });
+    handleCurrentChange() {
+      this.getMemeTemplate();
     },
   },
   created() {

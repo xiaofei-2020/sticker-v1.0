@@ -4,7 +4,7 @@
       <el-input
         placeholder="输入关键字搜索"
         v-model="keyword"
-        @keyup.enter.native="handleSearch({ keyword, type })"
+        @keyup.enter.native="handleSearch({keyword})"
       >
         <template #prepend>
           <el-select v-model="type" placeholder="搜索类型" style="width: 108px">
@@ -17,7 +17,7 @@
         <template #append>
           <el-button
             icon="el-icon-search"
-            @click="handleSearch({ keyword, type })"
+            @click="handleSearch({keyword})"
           ></el-button>
         </template>
       </el-input>
@@ -25,7 +25,7 @@
 
     <SectionTitle
       title="表情搜索"
-      :describe="`找到${total}个与 &quot;${keyword}&quot; 相关的表情包`"
+      :describe="`找到${total}个与 &quot;${resultKeyword}&quot; 相关的表情包`"
     />
     <div class="meme-list">
       <MemeCard
@@ -71,15 +71,17 @@ export default {
       total: 1000,
 
       resultData: [],
+      resultKeyword: '', // 搜索结果相关的关键字
     };
   },
   methods: {
-    async handleSearch({ keyword, page }) {
+    async handleSearch({ keyword, page=1 }) {
       keyword = keyword.trim();
-
-      let [keywordRes] = await tryCatch(formValidator("keywordRule", keyword));
-      if (keywordRes === null) {
-        return;
+      if(!this.type){
+        let [keywordRes] = await tryCatch(formValidator("keywordRule", keyword));
+        if (keywordRes === null) {
+          return;
+        }
       }
 
       let res = await resourcesApi("get", {
@@ -91,20 +93,20 @@ export default {
 
       if (res.data.success) {
         this.resultData = res.data.data;
+        this.resultKeyword = keyword;
+        this.page = page;
       }
     },
     // 切换页
     handleCurrentChange(currentPage) {
-      this.handleSearch({ keyword: this.keyword, page: currentPage - 1 });
+      this.handleSearch({ keyword: this.resultKeyword, page: currentPage });
     },
   },
   created() {
     if (this.$route.query.keyword) {
       this.keyword = this.$route.query.keyword;
       this.type = this.$route.query.type || "";
-      this.handleSearch({
-        keyword: this.keyword,
-      });
+      this.handleSearch({ keyword: this.keyword });
     }
   },
 };
