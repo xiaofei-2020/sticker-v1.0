@@ -1,0 +1,105 @@
+/* 普通IE浏览器 样式清除 */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+}
+/* 火狐浏览器样式清除 */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+.selected{
+  span{
+    color: #42b983;
+  }
+}
+.el-select{
+  .el-input{
+    .el-select__caret{
+      color: white;
+    }
+  }
+}
+.el-pagination.is-background .el-pager li:not(.disabled):hover{
+  color: #42b983;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active{
+  background-color: #42b983;
+}
+.el-pagination{
+  margin: 20px auto;
+}
+.meme-card .img-box[data-v-d3e84ae2]{
+  box-shadow: 0 0 5px #dcdfe6;
+  margin-bottom: 6px;
+  height: 124px;
+}
+.el-button--text{
+  color: #42b983;
+}
+a :hover{
+  color: #42b983;
+}
+.el-button--text:focus, .el-button--text:hover{
+  color: #42b983;
+}
+.el-button--text:focus, .el-button--text{
+  color: #606266;
+.el-icon-circle-plus-outline{
+  font-size: 18px;
+  margin: 0 2px;
+  vertical-align: middle;
+}
+}
+.el-input.is-active .el-input__inner, .el-input__inner:focus{
+  color: #42b983;
+  border-color: #42b983;
+}
+.el-button:active{
+  color: #42b983;
+  border-color: #42b983;
+}
+.el-button:focus, .el-button:hover{
+  color: #42b983;
+  border-color: #5ad69e;
+  background-color: #eaf8f2;
+}
+.el-upload--picture-card:hover, .el-upload:focus{
+  color: #40a375;
+}
+.el-button:focus, .el-button:hover{
+  border: none;
+  background-color:transparent;
+}
+.el-button--text, .el-button--text.is-disabled, .el-button--text.is-disabled:focus, .el-button--text.is-disabled:hover, .el-button--text:active{
+  border: none;
+}
+@keyframes bg-move {
+  0% {
+      background-position: 0 0
+  }
+
+  100% {
+      background-position: 1316px -1240px
+  }
+}
+.blank{
+  height: 140px;
+  background: url(../img/bg.jpg);
+  animation: bg-move 60s linear infinite
+}
+.not-found{
+  margin: 20px auto;
+  text-align: center;
+  height: 300px;
+  .bg{
+    height: 180px;
+    background: url(../img/404.jpg) center;
+    margin: auto;
+    opacity: 0.6;
+  }
+  h1{
+    padding: 20px;
+    color: #42b983;
+    font-size: 50px;
+  }
+}

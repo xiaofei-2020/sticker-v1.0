@@ -19,24 +19,21 @@ th {
   padding: 0;
   margin: 0;
 }
-
-html{
-  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+html {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 14px;
 }
-
 ul,
 ol,
 li {
   list-style: none;
 }
-
 a {
   text-decoration: none;
   color: #303133;
-  &:hover {
-    color: #40a375;
-  }
+}
+a:hover {
+  color: #40a375;
 }

@@ -1,0 +1,92 @@
+.flex {
+  display: flex;
+}
+.jc-sb {
+  justify-content: space-between;
+}
+.jc-c {
+  justify-content: center;
+}
+.ai-c {
+  align-items: center;
+}
+.ai-e {
+  align-items: flex-end;
+}
+.grid {
+  display: grid;
+}
+.bg-blue {
+  background-color: #409EFF;
+}
+.bg-green {
+  background-color: #67C23A;
+}
+.bg-yellow {
+  background-color: #E6A23C;
+}
+.bg-red {
+  background-color: #F56C6C;
+}
+.bg-gray {
+  background-color: #909399;
+}
+.mr-8 {
+  margin-right: 8px;
+}
+.mr-12 {
+  margin-right: 12px;
+}
+.mr-16 {
+  margin-right: 16px;
+}
+.icon {
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  width: 16px;
+  height: 16px;
+}
+.icon-star-on {
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  width: 16px;
+  height: 16px;
+  background-image: url('~@/assets/icon/star-on.png');
+}
+.icon-star-off {
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  width: 16px;
+  height: 16px;
+  background-image: url('~@/assets/icon/star-off.png');
+}

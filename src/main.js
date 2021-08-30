@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import "./assets/css/base.less";
 import "./assets/css/common.less";
+import "./assets/css/main.less";
 import "./mock";
 
 import {
