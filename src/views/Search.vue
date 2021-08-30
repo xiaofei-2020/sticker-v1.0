@@ -4,7 +4,7 @@
       <el-input
         placeholder="输入关键字搜索"
         v-model="keyword"
-        @keyup.enter.native="handleSearch({keyword})"
+        @keyup.enter.native="handleSearch({ keyword })"
       >
         <template #prepend>
           <el-select v-model="type" placeholder="搜索类型" style="width: 108px">
@@ -17,7 +17,7 @@
         <template #append>
           <el-button
             icon="el-icon-search"
-            @click="handleSearch({keyword})"
+            @click="handleSearch({ keyword })"
           ></el-button>
         </template>
       </el-input>
@@ -71,14 +71,16 @@ export default {
       total: 1000,
 
       resultData: [],
-      resultKeyword: '', // 搜索结果相关的关键字
+      resultKeyword: "", // 搜索结果相关的关键字
     };
   },
   methods: {
-    async handleSearch({ keyword, page=1 }) {
+    async handleSearch({ keyword, page = 1 }) {
       keyword = keyword.trim();
-      if(!this.type){
-        let [keywordRes] = await tryCatch(formValidator("keywordRule", keyword));
+      if (!this.type) {
+        let [keywordRes] = await tryCatch(
+          formValidator("keywordRule", keyword)
+        );
         if (keywordRes === null) {
           return;
         }
