@@ -1,6 +1,7 @@
 <template>
   <div class="gen-img">
     <div class="gen-img-content">
+      <h2><i class="el-icon-edit-outline"></i> 表情制作</h2>
       <canvas id="draw-board"></canvas>
       <div class="tool-box">
         <div class="sel-img-box">
@@ -13,9 +14,10 @@
             :on-change="handleUploadChange"
             :limit="1"
           >
-            <el-button type="text">{{
-              hasChosenImg ? "重新选择" : "选择本地图片"
-            }}</el-button>
+            <el-button type="text"
+              ><i class="el-icon-circle-plus-outline"></i
+              >{{ hasChosenImg ? "重新选择" : "选择本地图片" }}</el-button
+            >
           </el-upload>
           <el-button
             v-show="hasChosenImg"
@@ -32,9 +34,11 @@
             placeholder="请输入要添加的文字"
             style="margin-bottom: 20px"
           ></el-input>
-          <el-button type="primary" @click="genImg">生成</el-button>
-          <el-button type="primary" @click="download">下载</el-button>
-          <el-button type="primary" @click="collect">收藏</el-button>
+          <div class="btn">
+            <el-button type="primary" @click="genImg">生成</el-button>
+            <el-button type="primary" @click="download">下载</el-button>
+            <el-button type="primary" @click="collect">收藏</el-button>
+          </div>
         </div>
       </div>
     </div>
@@ -166,15 +170,22 @@ export default {
 </script>
 <style scoped lang="less">
 .gen-img {
-  position: relative;
+  // position: relative;
   .gen-img-content {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    // position: absolute;
+    // left: 50%;
+    // transform: translateX(-50%);
     width: 50%;
-    border-left: 1px dashed #000;
-    border-right: 1px dashed #000;
+    // border-left: 1px dashed #000;
+    // border-right: 1px dashed #000;
+    // text-align: center;
+    margin: 20px auto;
     text-align: center;
+    h2 {
+      margin: 20px auto 30px;
+      text-align: center;
+      color: #40a375;
+    }
     #draw-board {
       box-shadow: 0 0 5px #ccc;
     }
@@ -183,14 +194,35 @@ export default {
       flex-direction: column;
       align-items: center;
       .sel-img-box {
-        display: flex;
-        justify-content: flex-end;
+        // display: flex;
+        // justify-content: flex-end;
         width: 300px;
-        margin-top: -10px;
+        // margin-top: -10px;
+        text-align: right;
       }
       .tool-box-detail {
         width: 400px;
         text-align: left;
+        margin-top: 15px;
+        .el-input{
+          height: 32px;
+          box-shadow: 0 0 2px #92c2aa;
+          margin-top: 5px;
+        }
+        .btn {
+          margin: 5px 30px;
+          height: 80px;
+          .el-button {
+            background-color: #42b983;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 20px;
+            border: 1px solid #42b983;
+          }
+          .el-button :hover{
+            font-size: 16px;
+          }
+        }
       }
     }
   }

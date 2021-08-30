@@ -4,7 +4,7 @@
     <!-- <a href="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" download="">下载</a> -->
     <div class="gen-gif-preview flex">
       <div class="img-box">
-        <h2>表情制作</h2>
+        <h2><i class="el-icon-edit-outline"></i> 表情制作</h2>
         <img :src="gif || customGif || defaultGif" alt="" />
         <div class="action flex">
           <el-upload
@@ -16,9 +16,10 @@
             :on-change="handleUploadChange"
             :limit="1"
           >
-            <el-button type="text">{{
-              customGif ? "重新选择" : "选择本地图片"
-            }}</el-button>
+            <el-button type="text"
+              ><i class="el-icon-circle-plus-outline"></i
+              >{{ customGif ? "重新选择" : "选择本地图片" }}</el-button
+            >
           </el-upload>
           <el-button
             v-show="customGif"
@@ -82,7 +83,9 @@
               class="el-frame-index"
               v-model="item.end"
               type="number"
-              @blur="item.end = formatNumber(item.end, 1, frameList.length || 1)"
+              @blur="
+                item.end = formatNumber(item.end, 1, frameList.length || 1)
+              "
             ></el-input>
             &nbsp;帧
             <el-button
@@ -94,7 +97,11 @@
           </template>
         </div>
       </div>
-      <div v-if="currentFramePreview" class="flex ai-c" style="margin: 4px 0 16px 0">
+      <div
+        v-if="currentFramePreview"
+        class="flex ai-c"
+        style="margin: 4px 0 16px 0"
+      >
         <el-button
           class="el-add-text-btn"
           type="primary"
@@ -111,9 +118,9 @@
       </div>
 
       <template v-if="currentFramePreview">
-      <h3>文本设置</h3>
-      <div class="text-set-wrap">
-        <!-- <div class="mr-12"> -->
+        <h3>文本设置</h3>
+        <div class="text-set-wrap">
+          <!-- <div class="mr-12"> -->
           <label for="fontSize">字号</label>
           <el-input-number
             class="mr-16"
@@ -123,31 +130,31 @@
               gifMetaData.textList[0] ? gifMetaData.textList[0].fontSize : 1
             "
             :min="1"
-            @change="(value)=>handleChangeTextItem('fontSize', value)"
+            @change="(value) => handleChangeTextItem('fontSize', value)"
           ></el-input-number>
-        <!-- </div>
+          <!-- </div>
         <div> -->
           <label for="strokeWidth">文字描边</label>
           <el-input-number
             id="strokeWidth"
             size="mini"
             :value="
-              gifMetaData.textList[0] ? gifMetaData.textList[0].strokeWidth : 0.1
+              gifMetaData.textList[0]
+                ? gifMetaData.textList[0].strokeWidth
+                : 0.1
             "
             :step="0.1"
             :min="0"
-            @change="(value)=>handleChangeTextItem('strokeWidth', value)"
+            @change="(value) => handleChangeTextItem('strokeWidth', value)"
           ></el-input-number>
-        <!-- </div> -->
-      </div>
+          <!-- </div> -->
+        </div>
       </template>
     </div>
 
-    <section class="gen-gif-font">
-      
-    </section>
+    <section class="gen-gif-font"></section>
 
-    <div>
+    <div class="btn">
       <el-button @click="generateGif">生成</el-button>
       <el-button v-if="gif" @click="download(gif, 'file')">下载</el-button>
       <el-button>收藏</el-button>
@@ -405,7 +412,7 @@ export default {
       // console.log(this.currentFrameIndex);
     },
     handleAddText() {
-      if(!this.gifMetaData.textList[0]){
+      if (!this.gifMetaData.textList[0]) {
         let text = {
           key: new Date().getTime(),
           start: 1,
@@ -419,14 +426,14 @@ export default {
         };
 
         this.gifMetaData.textList.push(text);
-        return
+        return;
       }
       // ================================
       let text = JSON.parse(JSON.stringify(this.gifMetaData.textList[0]));
 
       Object.assign(text, {
         key: new Date().getTime(),
-        value: ""
+        value: "",
       });
 
       this.gifMetaData.textList.push(text);
@@ -435,8 +442,8 @@ export default {
     handleDeleteText(textIndex) {
       this.gifMetaData.textList.splice(textIndex, 1);
     },
-    handleChangeTextItem(key, value){
-      this.gifMetaData.textList.forEach(item=>{
+    handleChangeTextItem(key, value) {
+      this.gifMetaData.textList.forEach((item) => {
         item[key] = value;
       });
     },
@@ -496,7 +503,8 @@ export default {
         if (this.gifMetaData.blackRect) {
           tempCtx.fillRect(
             0,
-            this.gifMetaData.height - (this.gifMetaData.textList[0].fontSize + 10),
+            this.gifMetaData.height -
+              (this.gifMetaData.textList[0].fontSize + 10),
             this.gifMetaData.width,
             this.gifMetaData.textList[0].fontSize + 10
           );
@@ -522,7 +530,7 @@ export default {
             textWidth
           );
 
-          if( text.strokeWidth > 0 ){
+          if (text.strokeWidth > 0) {
             tempCtx.lineWidth = text.strokeWidth;
             tempCtx.strokeStyle = "#000"; // 轮廓颜色
             tempCtx.strokeText(
@@ -532,7 +540,6 @@ export default {
               textWidth
             );
           }
-          
         }
 
         gif.addFrame(tempCanvas, { copy: true, delay: frame.delay });
@@ -563,12 +570,26 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
+  .btn {
+    height: 80px;
+    .el-button {
+      background-color: #42b983;
+      color: #fff;
+      padding: 10px 20px;
+      margin: 20px;
+      border: 1px solid #42b983;
+    }
+    .el-button :hover {
+      font-size: 16px;
+    }
+  }
   .gen-gif-preview {
     // width: 300px;
     // margin: 0 auto;
     h2 {
-      margin-bottom: 12px;
+      margin: 20px auto 30px;
       text-align: center;
+      color: #40a375;
     }
     .img-box {
       max-width: 300px;
@@ -579,6 +600,8 @@ export default {
     }
     img {
       max-width: 100%;
+      box-shadow: 0 0 5px #dcdfe6;
+      margin: 10px;
     }
     .action {
       justify-content: flex-end;
@@ -587,18 +610,22 @@ export default {
   /deep/ .gen-gif-content {
     margin-bottom: 16px;
     h3 {
-      margin-bottom: 8px;
+      margin-bottom: 16px;
     }
     .text-item {
-      margin-bottom: 8px;
+      margin-bottom: 16px;
       label {
         color: #909399;
+      }
+      .ai-c {
+        margin: 5px auto;
       }
       .el-text {
         width: 350px;
         margin-right: 8px;
         .el-input__inner {
           height: 32px;
+          box-shadow: 0 0 2px #92c2aa;
         }
       }
       .el-frame-index {
@@ -625,7 +652,7 @@ export default {
       width: 350px;
     }
 
-    .text-set-wrap{
+    .text-set-wrap {
       label {
         margin-right: 8px;
       }
