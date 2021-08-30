@@ -1,6 +1,6 @@
 <template>
   <div class="pic">
-    <div style="width: 60%; margin: 0 auto">
+    <div style="width: 60%; margin: 40px auto">
       <el-input
         placeholder="输入关键字搜索"
         v-model="keyword"
@@ -101,10 +101,35 @@ export default {
 
 <style lang="less" scoped>
 .pic {
+  padding-bottom: 30px;
+  .el-input-group {
+    border: 1px solid #42b983;
+    border-right: none;
+    border-radius: 5px;
+    .el-select {
+      border: none;
+      background-color: #42b983;
+      color: white;
+    }
+    .el-input-group__append {
+      .el-button {
+        border: 1px solid #42b983;
+        background-color: #42b983;
+        color: white;
+      }
+    }
+  }
   .meme-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 16px 28px;
+    margin: 30px auto;
+    padding-bottom: 20px;
+  }
+  .section-title[data-v-6a30d6d7] {
+    border-bottom: 2px solid #42b983;
+    color: #40a375;
+    padding-bottom: 10px;
   }
 }
 </style>
