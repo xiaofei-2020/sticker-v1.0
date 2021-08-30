@@ -49,7 +49,7 @@ export default {
         if (meme.img.split(".").pop() === "gif") {
           this.$router.push("/gen-gif");
         } else {
-          this.$router.push("/gen-img");
+          this.$router.push("/gen-img/" + meme.resource_id);
         }
       } else {
         // this.$router.push('/img-detail');
