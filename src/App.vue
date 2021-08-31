@@ -21,6 +21,11 @@
     <main class="main">
       <router-view />
     </main>
+    <div class="backtop">
+      <a href="javascript:window.scrollTo(0,0)">
+        <i class="el-icon-caret-top"></i>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -55,6 +60,25 @@ export default {
   // text-align: center;
   color: #303133;
   font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  .backtop {
+    font-size: 36px;
+    text-align: center;
+    position: fixed;
+    bottom: 50px;
+    right: 100px;
+    z-index: 998;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.383);
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    a {
+      color: #40a375;
+    }
+  }
+  .backtop:hover{
+    background-color: rgb(248, 246, 246);
+  }
   nav {
     position: fixed;
     top: 0;
@@ -67,7 +91,8 @@ export default {
     font-size: 16px;
     background-color: #42b983;
     color: white;
-    .logo{
+    z-index: 999;
+    .logo {
       font-size: 22px;
       margin-left: 80px;
     }
@@ -97,7 +122,7 @@ export default {
 
   main {
     width: 1200px;
-    padding:12px 26px;
+    padding: 12px 26px;
     margin: 14px auto;
     // border: solid 1px #42b983;
     box-shadow: 0 0 12px #92c2aa;
