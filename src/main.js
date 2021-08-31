@@ -18,6 +18,8 @@ import {
   FormItem,
   Select,
   Option,
+  Tabs,
+  TabPane,
   Switch,
   Slider,
 } from "element-ui";
@@ -40,6 +42,8 @@ Vue.use(Form);
 Vue.use(FormItem);
 Vue.use(Select);
 Vue.use(Option);
+Vue.use(Tabs);
+Vue.use(TabPane);
 Vue.use(Switch);
 Vue.use(Slider);
 Vue.prototype.$message = Message;

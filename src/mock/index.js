@@ -11,7 +11,9 @@ function getUserInfo(options) {
     success: true,
 
     data: {
-      eMail: "123456@163.com",
+      online: true,
+      token: 'test',
+      eMail: "123456789@163.com",
     },
   };
 }
@@ -29,10 +31,7 @@ function getFile(options) {
   };
 }
 
-function getResources(options) {
-  console.log(options);
-  let body = JSON.parse(options.body);
-
+function list(body){
   let data = [];
   if (body.type === "TEMPLATE") {
     for (let i = 1; i <= body.pageSize; i++) {
@@ -60,6 +59,15 @@ function getResources(options) {
     }
   }
 
+  return data
+}
+
+function getResources(options) {
+  console.log(options);
+  let body = JSON.parse(options.body);
+
+  let data = list(body);
+
   return {
     code: 0,
     msg: "ok",
@@ -71,11 +79,13 @@ function getResources(options) {
 
 function collection(options) {
   console.log(options);
-
+  let body = JSON.parse(options.body);
+  let data = list(body);
   return {
     code: 0,
     msg: "ok",
     success: true,
+    data
   };
 }
 
@@ -83,5 +93,6 @@ function collection(options) {
 Mock.mock(baseURL + "/userInfo", "get", getUserInfo);
 Mock.mock(baseURL + "/file", "get", getFile);
 Mock.mock(baseURL + "/resources", "get", getResources);
+Mock.mock(baseURL + "/collection", "get", collection);
 Mock.mock(baseURL + "/collection", "post", collection);
 Mock.mock(baseURL + "/collection", "delete", collection);

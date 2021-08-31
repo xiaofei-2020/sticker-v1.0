@@ -42,6 +42,12 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "gen-img" */ "../views/GenImg"),
   },
+  {
+    path: "/collection",
+    name: "collection",
+    component: () =>
+      import(/* webpackChunkName: "Collection" */ "../views/Collection"),
+  },
 
   {
     // 放最后
