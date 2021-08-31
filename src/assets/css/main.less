@@ -44,10 +44,9 @@ a :hover{
 }
 .el-button--text:focus, .el-button--text{
   color: #606266;
-.el-icon-circle-plus-outline{
-  font-size: 18px;
+.el-icon-circle-plus-outline,.el-icon-circle-close{
+  font-size: 16px;
   margin: 0 2px;
-  vertical-align: middle;
 }
 }
 .el-input.is-active .el-input__inner, .el-input__inner:focus{
@@ -83,7 +82,7 @@ a :hover{
   }
 }
 .blank{
-  height: 140px;
+  height: 200px;
   background: url(../img/bg.jpg);
   animation: bg-move 60s linear infinite
 }
@@ -101,5 +100,34 @@ a :hover{
     padding: 20px;
     color: #42b983;
     font-size: 50px;
+  }
+}
+#gen-gif{
+  .el-slider__bar{
+    background-color: #42b983;
+  }
+  .el-slider__button{
+    border-color: #42b983;
+  }
+  .el-button--primary{
+    color: #369c6e;
+    background: #eaf8f2;
+    border:2px solid #42b983;
+
+  }
+  .el-button--primary:hover{
+    color: #fff;
+    background: #42b983;
+    border: 1px solid #42b983;
+  }
+  .el-switch.is-checked .el-switch__core{
+    background-color: #42b983;
+    border-color: #42b983;
+  }
+  .el-input-number__decrease:hover, .el-input-number__increase:hover{
+    color: #42b983;
+  }
+  .el-input-number__decrease:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled), .el-input-number__increase:hover:not(.is-disabled)~.el-input .el-input__inner:not(.is-disabled){
+    border-color: #42b983;
   }
 }

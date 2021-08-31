@@ -56,6 +56,10 @@ export default {
   color: #303133;
   font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
   nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
     padding: 0 16px;
     height: 68px;
     min-width: 980px;

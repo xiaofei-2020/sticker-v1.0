@@ -24,7 +24,7 @@
             type="text"
             style="margin-left: 10px"
             @click="cancelSel"
-            >取消选择</el-button
+            ><i class="el-icon-circle-close"></i>取消选择</el-button
           >
         </div>
         <div class="tool-box-detail">
@@ -197,7 +197,7 @@ export default {
         // display: flex;
         // justify-content: flex-end;
         width: 300px;
-        // margin-top: -10px;
+        margin-top: 15px;
         text-align: right;
       }
       .tool-box-detail {
@@ -215,12 +215,11 @@ export default {
           .el-button {
             background-color: #42b983;
             color: #fff;
-            padding: 10px 20px;
             margin: 20px;
             border: 1px solid #42b983;
           }
           .el-button :hover{
-            font-size: 16px;
+            font-weight: 700;
           }
         }
       }
