@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getResouceById, resourcesApi, collectionApi } from "@/api";
+import { getResouceById, collectionApi } from "@/api";
 export default {
   name: "GenImg",
   components: {},
@@ -120,35 +120,15 @@ export default {
     // 取消选择本地图片, 那就展示默认模板图片
     cancelSel() {
       this.hasChosenImg = false;
+      this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
       if (this.defaultImgBase64 !== "") {
-        this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
-        this.drawImg(this.defaultImgBase64);
-      } else {
-        this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
+        this.drawImgFromBase64(this.defaultImgBase64);
       }
-    },
-    // 上传图片
-    uploadImg(data) {
-      return resourcesApi("post", data).then((res) => {
-        if (res.success === true) {
-          this.$message.success("上传图片成功");
-          this.resource_id = res.resource_id;
-        }
-      });
     },
     // 上传本地图片后触发(只绘图)
     async handleUploadChange(file) {
       this.hasChosenImg = true;
       this.currentImgBase64 = await this.genBase64(file.raw);
-      const uploadData = {
-        type: "TEMPLATE",
-        account_id: 123456781234567812345678,
-        img: this.currentImgBase64,
-        content: "",
-      };
-      // 上传模板图片
-      this.uploadImg(uploadData);
-
       this.drawImgFromBase64(this.currentImgBase64);
     },
     // 根据base64绘图
@@ -225,14 +205,6 @@ export default {
       this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
       this.drawImg(this.curImg, this.ctxWidth, this.ctxHeight);
       this.drawText(textInfo);
-
-      const uploadData = {
-        type: "MEME_IMG",
-        account_id: 123456781234567812345678,
-        img: document.getElementById("gen-img-canvas").toDataURL(),
-        content: this.inputText,
-      };
-      this.uploadImg(uploadData);
     },
     /**
      * 根据text和width, 将文字拆分成多行, 以数组形式表示
