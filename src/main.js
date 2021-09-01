@@ -22,6 +22,7 @@ import {
   TabPane,
   Switch,
   Slider,
+  ColorPicker,
 } from "element-ui";
 
 // 导入axios包
@@ -46,6 +47,7 @@ Vue.use(Tabs);
 Vue.use(TabPane);
 Vue.use(Switch);
 Vue.use(Slider);
+Vue.use(ColorPicker);
 Vue.prototype.$message = Message;
 
 Vue.config.productionTip = false;
