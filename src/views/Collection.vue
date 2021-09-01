@@ -148,6 +148,7 @@ export default {
 <style lang="less" scoped>
 .collection {
   padding-bottom: 30px;
+  padding-top: 20px;
   .meme-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);

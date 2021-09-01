@@ -26,12 +26,12 @@
             type="text"
             style="margin-left: 10px"
             @click="cancelSelect"
-            >取消选择</el-button
+            ><i class="el-icon-circle-close"></i>取消选择</el-button
           >
         </div>
       </div>
       <div class="img-box" v-if="currentFramePreview">
-        <h2>逐帧查看</h2>
+        <h2><i class="el-icon-s-operation"></i> 逐帧查看</h2>
         <img :src="currentFramePreview" alt="" />
         <!-- <img 
           v-for="(imgItem,imgIndex) in frameList" 
@@ -97,7 +97,8 @@
           </template>
         </div>
       </div>
-      <div
+      <div class="add-btn">
+        <div
         v-if="currentFramePreview"
         class="flex ai-c"
         style="margin: 4px 0 16px 0"
@@ -110,11 +111,12 @@
           @click="handleAddText"
           >添加内容</el-button
         >
-        <div class="flex ai-c">
+        <div class="flex ai-c h50">
           <label for="blackRect" style="margin: 0 8px">添加黑边</label>
           <el-switch id="blackRect" v-model="gifMetaData.blackRect">
           </el-switch>
         </div>
+      </div>
       </div>
 
       <template v-if="currentFramePreview">
@@ -134,7 +136,7 @@
           ></el-input-number>
           <!-- </div>
         <div> -->
-          <label for="strokeWidth">文字描边</label>
+          <label for="strokeWidth" class="text-r20">文字描边</label>
           <el-input-number
             id="strokeWidth"
             size="mini"
@@ -579,6 +581,17 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
+  .text-r20{
+    margin-left: 20px;
+  }
+  .add-btn{
+    height: 50px;
+    margin: 30px auto 16px;
+    .h50{
+      height: 50px;
+      margin-left: 10px;
+    }
+  }
   .btn {
     height: 80px;
     .el-button {
@@ -589,7 +602,7 @@ export default {
       border: 1px solid #42b983;
     }
     .el-button :hover {
-      font-size: 16px;
+      font-weight: 700;
     }
   }
   .gen-gif-preview {
@@ -602,7 +615,7 @@ export default {
     }
     .img-box {
       max-width: 300px;
-      margin-right: 20px;
+      margin-right: 30px;
       &:last-child {
         margin-right: 0;
       }
@@ -614,6 +627,7 @@ export default {
     }
     .action {
       justify-content: flex-end;
+      padding:0 8px;
     }
   }
   /deep/ .gen-gif-content {

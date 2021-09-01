@@ -34,6 +34,11 @@
     <main class="main">
       <router-view />
     </main>
+    <div class="backtop">
+      <a href="javascript:window.scrollTo(0,0)" title="回到顶部">
+        <i class="el-icon-caret-top"></i>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -70,17 +75,41 @@ export default {
   // text-align: center;
   color: #303133;
   font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  .backtop {
+    font-size: 36px;
+    text-align: center;
+    position: fixed;
+    bottom: 50px;
+    right: 100px;
+    z-index: 998;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.383);
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    a {
+      color: #40a375;
+    }
+  }
+  .backtop:hover{
+    background-color: rgb(248, 246, 246);
+  }
   nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-sizing: border-box;
     padding: 0 16px;
-    height: 68px;
+    height: 76px;
     min-width: 980px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     font-size: 16px;
     background-color: #42b983;
     color: white;
+    z-index: 999;
     .logo {
       font-size: 22px;
-      margin-left: 80px;
+      margin-left: 70px;
     }
     .link {
       height: 100%;
