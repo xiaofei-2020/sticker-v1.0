@@ -88,7 +88,7 @@ a :hover {
   }
 }
 .blank {
-  height: 200px;
+  height: 220px;
   background: url(../img/bg.jpg);
   animation: bg-move 60s linear infinite;
 }
@@ -135,4 +135,10 @@ a :hover {
 #gen-gif .el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled),
 #gen-gif .el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
   border-color: #42b983;
+}
+.collection .is-active {
+  color: #42b983;
+}
+.collection .el-tabs__item:hover {
+  color: #42b983;
 }

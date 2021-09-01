@@ -111,7 +111,7 @@
           @click="handleAddText"
           >添加内容</el-button
         >
-        <div class="flex ai-c">
+        <div class="flex ai-c h50">
           <label for="blackRect" style="margin: 0 8px">添加黑边</label>
           <el-switch id="blackRect" v-model="gifMetaData.blackRect">
           </el-switch>
@@ -136,7 +136,7 @@
           ></el-input-number>
           <!-- </div>
         <div> -->
-          <label for="strokeWidth">文字描边</label>
+          <label for="strokeWidth" class="text-r20">文字描边</label>
           <el-input-number
             id="strokeWidth"
             size="mini"
@@ -572,9 +572,16 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
+  .text-r20{
+    margin-left: 20px;
+  }
   .add-btn{
     height: 50px;
     margin: 30px auto 16px;
+    .h50{
+      height: 50px;
+      margin-left: 10px;
+    }
   }
   .btn {
     height: 80px;

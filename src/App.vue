@@ -8,13 +8,19 @@
           >表情制作</router-link
         >
         <router-link to="/pic" tag="li" class="flex ai-c">表情图片</router-link>
+        <router-link to="/collection" tag="li" class="flex ai-c">我的收藏</router-link>
       </ul>
-      <div class="user">
-        <el-avatar :size="50" :src="'https://ccc'">
-          <img
-            src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-          />
-        </el-avatar>
+      <div class="user flex">
+          <el-avatar :size="50" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
+            <!-- 加载失败备用图 -->
+            <img
+              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+            />
+          </el-avatar>
+          <div class="ml-8 flex jc-sb" style="flex-direction: column;">
+            <div class="nick-name text-nowrap" :title="userInfo.eMail">{{ userInfo.eMail }}</div>
+            <div class="action"><span class="logout">退出登录</span></div>
+          </div>
       </div>
     </nav>
     <div class="blank"></div>
@@ -22,7 +28,7 @@
       <router-view />
     </main>
     <div class="backtop">
-      <a href="javascript:window.scrollTo(0,0)">
+      <a href="javascript:window.scrollTo(0,0)" title="回到顶部">
         <i class="el-icon-caret-top"></i>
       </a>
     </div>
@@ -36,7 +42,9 @@ export default {
   name: "App",
   data() {
     return {
-      userInfo: {},
+      userInfo: {
+        online: false
+      },
     };
   },
   methods: {
@@ -85,7 +93,7 @@ export default {
     width: 100%;
     box-sizing: border-box;
     padding: 0 16px;
-    height: 68px;
+    height: 76px;
     min-width: 980px;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     font-size: 16px;
@@ -94,7 +102,7 @@ export default {
     z-index: 999;
     .logo {
       font-size: 22px;
-      margin-left: 80px;
+      margin-left: 70px;
     }
     .link {
       height: 100%;
@@ -115,6 +123,19 @@ export default {
           // color: #fff;
           background-color: #40a375;
           font-size: 18px;
+        }
+      }
+    }
+    .user{
+      font-size: 14px;
+      .nick-name {
+        width: 130px;
+      }
+      .action {
+        text-align: right;
+        .logout {
+          cursor: pointer;
+          
         }
       }
     }

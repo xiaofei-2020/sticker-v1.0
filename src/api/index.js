@@ -55,6 +55,14 @@ export const resourcesApi = (method, data, params) => {
   });
 };
 
+// 根据resource_id查找资源
+export const getResouceById = (resource_id) => {
+  return axios({
+    url: "/resources/" + resource_id,
+    method: "get",
+  });
+};
+
 // 收藏
 export const collectionApi = (method, data, params) => {
   return axios({
