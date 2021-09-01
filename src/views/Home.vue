@@ -168,7 +168,7 @@ export default {
   section {
     margin: 50px auto 5px;
     padding-bottom: 15px;
-    .section-title[data-v-6a30d6d7] {
+    .section-title {
       border-bottom: 2px solid #42b983;
       color: #40a375;
       padding-bottom: 10px;
