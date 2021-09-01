@@ -177,6 +177,7 @@ import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
 import GIF from "../../public/gif.js";
 // import GIF from "@/assets/js/gif.js";
+import { getResouceById } from "@/api";
 
 export default {
   name: "GenGif",
@@ -268,6 +269,14 @@ export default {
         value = max;
       }
       return value;
+    },
+    async getDefaultGif() {
+      let res = await getResouceById(this.$route.params.resource_id);
+
+      if (res.data.success) {
+        this.defaultGif = res.data.data.img;
+        this.gifMetaData = res.data.data.content;
+      }
     },
     getGifFrames(gif) {
       return gif

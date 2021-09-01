@@ -25,7 +25,9 @@
     <section>
       <SectionTitle title="表情制作" describe="创作属于你的表情图">
         <template #right>
-          <router-link to="/maker">更多 <i class="el-icon-d-arrow-right"></i></router-link>
+          <router-link to="/maker"
+            >更多 <i class="el-icon-d-arrow-right"></i
+          ></router-link>
         </template>
       </SectionTitle>
       <div class="meme-list">
@@ -39,7 +41,9 @@
     <section>
       <SectionTitle title="表情图片" describe="发现你要的表情包">
         <template #right>
-          <router-link to="/pic">更多 <i class="el-icon-d-arrow-right"></i></router-link>
+          <router-link to="/pic"
+            >更多 <i class="el-icon-d-arrow-right"></i
+          ></router-link>
         </template>
       </SectionTitle>
       <div class="meme-list">
@@ -80,26 +84,34 @@ export default {
   methods: {
     // 获取表情模板
     async getMemeTemplate() {
-      let res = await resourcesApi("get", {
-        type: "TEMPLATE",
-        page: 1,
-        pageSize: 10,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "TEMPLATE",
+          page: 1,
+          pageSize: 10,
+        }
+      );
 
       if (res.data.success) {
-        this.templateList = res.data.data;
+        this.templateList = res.data.data.elements || [];
       }
     },
     // 获取表情图片
     async getMemeProduc() {
-      let res = await resourcesApi("get", {
-        type: "MEME_IMG",
-        page: 1,
-        pageSize: 10,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "MEME_IMG",
+          page: 1,
+          pageSize: 10,
+        }
+      );
 
       if (res.data.success) {
-        this.productList = res.data.data;
+        this.productList = res.data.data.elements || [];
       }
     },
     // 跳转搜索页
@@ -156,11 +168,12 @@ export default {
   section {
     margin: 50px auto 5px;
     padding-bottom: 15px;
-    .section-title[data-v-6a30d6d7]{
+    .section-title[data-v-6a30d6d7] {
       border-bottom: 2px solid #42b983;
       color: #40a375;
       padding-bottom: 10px;
-      [class*=" el-icon-"], [class^=el-icon-]{
+      [class*=" el-icon-"],
+      [class^="el-icon-"] {
         font-weight: 700;
         margin-right: 5px;
       }
