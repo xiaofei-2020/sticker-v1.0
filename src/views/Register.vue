@@ -47,7 +47,7 @@ export default {
       error: "",
       verify_Code: {
         type: "REGIST",
-        account_email: "yutujiayuan@126.com",
+        account_email: "",
       },
       account: {
         email: "",
@@ -101,8 +101,6 @@ export default {
     sendMsg() {
       let that = this;
       this.$refs.ruleForm.validateField("email", async (valid) => {
-        alert("教研成果");
-        console.log("that.RegisterForm.email:", that.RegisterForm.email);
         const { data: res } = await this.$http.post("/verify_code", {
           type: "REGIST",
           account_email: that.RegisterForm.email,
@@ -112,34 +110,8 @@ export default {
           return this.$message.error("登录失败 帐号或密码错误!");
         }
         this.RegisterForm.verify_code = res.code;
-        console.log(
-          "this.RegisterForm.verify_code:",
-          this.RegisterForm.verify_code
-        );
         this.$message.success(res.msg);
       });
-
-      // if (!namePass && !emailPass) {
-      //   self.$https.post("/verify_code", {
-      //       type: encodeURIComponent(self.ruleForm.name),
-      //       account_email: self.ruleForm.email,
-      //     })
-      //     .then(({ status, data }) => {
-      //       if (status == 200 && data && data.code == 0) {
-      //         let count = 60;
-      //         self.statusMsg = `验证码已经发送，${count--}秒后可以再次发送`;
-      //         self.tiemid = setInterval(() => {
-      //           self.statusMsg = `验证码已经发送，${count--}秒后可以再次发送`;
-      //           if (count === 0) {
-      //             clearInterval(self.tiemid);
-      //             self.statusMsg = `若没有收到验证码，请再次发送`;
-      //           }
-      //         }, 1000);
-      //       } else {
-      //         self.statusMsg = data.msg;
-      //       }
-      //     });
-      // }
     },
     register() {
       let encrypt = new JSEncrypt();
@@ -152,7 +124,6 @@ export default {
           const encryptKey = encrypt.encrypt(that.RegisterForm.psd); //使用公钥加密，得到密文
           that.RegisterForm.psd = encryptKey; //encryptKey 格式为base64
           const { data: res } = await this.$http.post("/account", {
-            // password: CryptoJS.MD5(self.ruleForm.password).toString(),
             psd: that.RegisterForm.psd,
             email: this.RegisterForm.email,
             verify_code: this.RegisterForm.verify_code,
@@ -164,24 +135,7 @@ export default {
           this.$message.success(res.msg);
           window.sessionStorage.setItem("token", res.data);
           this.$router.push("/");
-
-          console.log("register_res是什么：", res);
         }
-        //     .then(({ status, data }) => {
-        //       if (status === 200) {
-        //         if (data && data.code === 0) {
-        //           location.href = "/login";
-        //         } else {
-        //           self.error = data.msg;
-        //         }
-        //       } else {
-        //         self.error = `服务出错，错误码:${status}`;
-        //       }
-        //       setTimeout(() => {
-        //         self.error = "";
-        //       }, 1500);
-        //     });
-        // }
       });
     },
   },
