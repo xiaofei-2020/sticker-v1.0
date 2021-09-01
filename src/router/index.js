@@ -31,7 +31,7 @@ const routes = [
       import(/* webpackChunkName: "Search" */ "../views/Search.vue"),
   },
   {
-    path: "/gen-gif",
+    path: "/gen-gif/:resource_id",
     name: "gen-gif",
     component: () =>
       import(/* webpackChunkName: "GenGif" */ "../views/GenGif.vue"),

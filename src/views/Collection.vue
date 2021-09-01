@@ -10,7 +10,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -30,7 +30,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -50,7 +50,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -63,7 +63,6 @@
         </el-pagination>
       </el-tab-pane>
     </el-tabs>
-    
   </div>
 </template>
 
@@ -82,26 +81,26 @@ export default {
   data() {
     return {
       typeMap: {
-        "all" :{
+        all: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
-          total: 100,
+          total: 0,
         },
-        "TEMPLATE" :{
+        TEMPLATE: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
-          total: 70,
+          total: 0,
         },
-        "MEME_IMG" :{
+        MEME_IMG: {
           imgList: [],
-          
+
           currentPage: 1,
           pageSize: 20,
-          total: 30,
+          total: 0,
         },
       },
       activeName: "all",
@@ -116,17 +115,22 @@ export default {
   methods: {
     // 获取收藏
     async getCollection() {
-      let res = await collectionApi("get", {
-        type: this.activeName,
-        page: this.typeMap[this.activeName].currentPage,
-        pageSize: this.typeMap[this.activeName].pageSize,
-      });
+      let res = await collectionApi(
+        "get",
+        {},
+        {
+          type: this.activeName,
+          page: this.typeMap[this.activeName].currentPage,
+          pageSize: this.typeMap[this.activeName].pageSize,
+        }
+      );
 
       if (res.data.success) {
-        this.typeMap[this.activeName].imgList = res.data.data;
+        this.typeMap[this.activeName].imgList = res.data.data.elements;
+        this.typeMap[this.activeName].total = res.data.data.totalElements;
       }
     },
-    handleClickTab(tab){
+    handleClickTab(tab) {
       console.log(tab);
       this.getCollection();
     },

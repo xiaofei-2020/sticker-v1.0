@@ -47,7 +47,7 @@ export default {
 
       if (meme.resource_type === "TEMPLATE") {
         if (meme.img.split(".").pop() === "gif") {
-          this.$router.push("/gen-gif");
+          this.$router.push("/gen-gif/" + meme.resource_id);
         } else {
           this.$router.push("/gen-img/" + meme.resource_id);
         }
