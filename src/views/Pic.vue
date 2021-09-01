@@ -22,7 +22,7 @@
         :meme="item"
       />
     </div>
-
+    <!-- v-if="total > pageSize" -->
     <el-pagination
       style="text-align: right"
       background
@@ -57,7 +57,7 @@ export default {
       type: "",
       currentPage: 1,
       pageSize: 20,
-      total: 1000,
+      total: 0,
 
       productList: [],
     };
@@ -65,14 +65,19 @@ export default {
   methods: {
     // 获取表情图片
     async getMemeProduc() {
-      let res = await resourcesApi("get", {
-        type: "MEME_IMG",
-        page: this.currentPage,
-        pageSize: this.pageSize,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "MEME_IMG",
+          page: this.currentPage,
+          pageSize: this.pageSize,
+        }
+      );
 
       if (res.data.success) {
-        this.productList = res.data.data;
+        this.productList = res.data.data.elements || [];
+        this.total = res.data.data.totalElements;
       }
     },
     // 跳转搜索页

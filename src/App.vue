@@ -8,19 +8,26 @@
           >表情制作</router-link
         >
         <router-link to="/pic" tag="li" class="flex ai-c">表情图片</router-link>
-        <router-link to="/collection" tag="li" class="flex ai-c">我的收藏</router-link>
+        <router-link to="/collection" tag="li" class="flex ai-c"
+          >我的收藏</router-link
+        >
       </ul>
       <div class="user flex">
-          <el-avatar :size="50" :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
-            <!-- 加载失败备用图 -->
-            <img
-              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
-            />
-          </el-avatar>
-          <div class="ml-8 flex jc-sb" style="flex-direction: column;">
-            <div class="nick-name text-nowrap" :title="userInfo.eMail">{{ userInfo.eMail }}</div>
-            <div class="action"><span class="logout">退出登录</span></div>
+        <el-avatar
+          :size="50"
+          :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
+        >
+          <!-- 加载失败备用图 -->
+          <img
+            src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+          />
+        </el-avatar>
+        <div class="ml-8 flex jc-sb" style="flex-direction: column">
+          <div class="nick-name text-nowrap" :title="userInfo.eMail">
+            {{ userInfo.eMail }}
           </div>
+          <div class="action"><span class="logout">退出登录</span></div>
+        </div>
       </div>
     </nav>
     <div class="blank"></div>
@@ -38,7 +45,7 @@ export default {
   data() {
     return {
       userInfo: {
-        online: false
+        online: false,
       },
     };
   },
@@ -71,7 +78,7 @@ export default {
     font-size: 16px;
     background-color: #42b983;
     color: white;
-    .logo{
+    .logo {
       font-size: 22px;
       margin-left: 80px;
     }
@@ -97,7 +104,7 @@ export default {
         }
       }
     }
-    .user{
+    .user {
       font-size: 14px;
       .nick-name {
         width: 130px;
@@ -106,7 +113,6 @@ export default {
         text-align: right;
         .logout {
           cursor: pointer;
-          
         }
       }
     }
@@ -114,7 +120,7 @@ export default {
 
   main {
     width: 1200px;
-    padding:12px 26px;
+    padding: 12px 26px;
     margin: 14px auto;
     // border: solid 1px #42b983;
     box-shadow: 0 0 12px #92c2aa;

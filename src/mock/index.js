@@ -14,31 +14,35 @@ function getUserInfo(options) {
 
     data: {
       online: true,
-      token: 'test',
+      token: "test",
       eMail: "123456789@163.com",
     },
   };
 }
 
-function getFile(options) {
-  console.log(options);
-  return {
-    code: 0,
-    msg: "ok",
-    success: true,
+// function getFile(options) {
+//   console.log(options);
+//   return {
+//     code: 0,
+//     msg: "ok",
+//     success: true,
 
-    data: {
-      file: require("../assets/tempImg/1.gif"),
-    },
+//     data: {
+//       file: require("../assets/tempImg/1.gif"),
+//     },
+//   };
+// }
+
+function list(body) {
+  console.log(body);
+  let data = {
+    elements: [],
+    totalElements: 0,
   };
-}
-
-function list(body){
-  let data = [];
   if (body.type === "TEMPLATE") {
     for (let i = 1; i <= body.pageSize; i++) {
       if (i % 2 !== 0) {
-        data.push({
+        data.elements.push({
           resource_id: i,
           resource_type: "TEMPLATE",
           img: require("../assets/tempImg/1.gif"),
@@ -46,7 +50,7 @@ function list(body){
             "{width: 300, height: 300, textList:[{start: 1, end: 10, x: 10, y: 200, color: '#fff', value: '好啊'}]}",
         });
       } else {
-        data.push({
+        data.elements.push({
           resource_id: i,
           resource_type: "TEMPLATE",
           img: require("../assets/tempImg/2.jpg"),
@@ -56,7 +60,7 @@ function list(body){
     }
   } else {
     for (let i = 1; i <= body.pageSize; i++) {
-      data.push({
+      data.elements.push({
         resource_id: i,
         resource_type: "MEME_IMG",
         img: require("../assets/tempImg/2.jpg"),
@@ -64,14 +68,25 @@ function list(body){
     }
   }
 
-  return data
+  data.totalElements = data.elements.length;
+  return data;
+}
+
+function parseURLToObj(url) {
+  // 解析 query
+  let query = url.split("?")[1];
+
+  let resObj = {};
+  const pList = new URLSearchParams(query);
+  pList.forEach((val, key) => {
+    resObj[key] = val;
+  });
+  return resObj;
 }
 
 function getResources(options) {
   console.log(options);
-  let body = JSON.parse(options.body);
-
-  let data = list(body);
+  let data = list(parseURLToObj(options.url));
 
   return {
     code: 0,
@@ -98,21 +113,20 @@ function getResourceById() {
 
 function collection(options) {
   console.log(options);
-  let body = JSON.parse(options.body);
-  let data = list(body);
+  let data = list(parseURLToObj(options.url));
   return {
     code: 0,
     msg: "ok",
     success: true,
-    data
+    data,
   };
 }
 
 // 拦截 Ajax 请求
 Mock.mock(baseURL + "/userInfo", "get", getUserInfo);
-Mock.mock(baseURL + "/file", "get", getFile);
-Mock.mock(baseURL + "/resources", "get", getResources);
-Mock.mock(baseURL + "/collection", "get", collection);
+// Mock.mock(/file\?/, "get", getFile);
+Mock.mock(/resources\?/, "get", getResources);
+Mock.mock(/collection\?/, "get", collection);
 Mock.mock(baseURL + "/resources/2", "get", getResourceById);
 Mock.mock(baseURL + "/collection", "post", collection);
 Mock.mock(baseURL + "/collection", "delete", collection);
