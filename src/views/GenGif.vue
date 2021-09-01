@@ -99,24 +99,24 @@
       </div>
       <div class="add-btn">
         <div
-        v-if="currentFramePreview"
-        class="flex ai-c"
-        style="margin: 4px 0 16px 0"
-      >
-        <el-button
-          class="el-add-text-btn"
-          type="primary"
-          icon="el-icon-plus"
-          plain
-          @click="handleAddText"
-          >添加内容</el-button
+          v-if="currentFramePreview"
+          class="flex ai-c"
+          style="margin: 4px 0 16px 0"
         >
-        <div class="flex ai-c h50">
-          <label for="blackRect" style="margin: 0 8px">添加黑边</label>
-          <el-switch id="blackRect" v-model="gifMetaData.blackRect">
-          </el-switch>
+          <el-button
+            class="el-add-text-btn"
+            type="primary"
+            icon="el-icon-plus"
+            plain
+            @click="handleAddText"
+            >添加内容</el-button
+          >
+          <div class="flex ai-c h50">
+            <label for="blackRect" style="margin: 0 8px">添加黑边</label>
+            <el-switch id="blackRect" v-model="gifMetaData.blackRect">
+            </el-switch>
+          </div>
         </div>
-      </div>
       </div>
 
       <template v-if="currentFramePreview">
@@ -581,13 +581,13 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
-  .text-r20{
+  .text-r20 {
     margin-left: 20px;
   }
-  .add-btn{
+  .add-btn {
     height: 50px;
     margin: 30px auto 16px;
-    .h50{
+    .h50 {
       height: 50px;
       margin-left: 10px;
     }
@@ -627,7 +627,7 @@ export default {
     }
     .action {
       justify-content: flex-end;
-      padding:0 8px;
+      padding: 0 8px;
     }
   }
   /deep/ .gen-gif-content {
@@ -673,6 +673,14 @@ export default {
     }
     .el-add-text-btn {
       width: 350px;
+      color: #369c6e;
+      background: #eaf8f2;
+      border: 2px solid #42b983;
+    }
+    .el-add-text-btn:hover {
+      color: #fff;
+      background: #42b983;
+      border: 1px solid #42b983;
     }
 
     .text-set-wrap {

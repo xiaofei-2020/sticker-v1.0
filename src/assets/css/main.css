@@ -13,19 +13,11 @@ input[type="number"] {
 .el-select .el-input .el-select__caret {
   color: white;
 }
-.el-pagination.is-background .el-pager li:not(.disabled):hover {
-  color: #42b983;
-}
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #42b983;
 }
 .el-pagination {
   margin: 20px auto;
-}
-.meme-card .img-box[data-v-d3e84ae2] {
-  box-shadow: 0 0 5px #dcdfe6;
-  margin-bottom: 6px;
-  height: 124px;
 }
 .el-button--text {
   color: #42b983;
@@ -87,58 +79,52 @@ a :hover {
     background-position: 1316px -1240px;
   }
 }
-.blank {
-  height: 220px;
-  background: url(../img/bg.jpg);
-  animation: bg-move 60s linear infinite;
-}
-.not-found {
-  margin: 20px auto;
-  text-align: center;
-  height: 300px;
-}
-.not-found .bg {
-  height: 180px;
-  background: url(../img/404.jpg) center;
-  margin: auto;
-  opacity: 0.6;
-}
-.not-found h1 {
-  padding: 20px;
-  color: #42b983;
-  font-size: 50px;
-}
-#gen-gif .el-slider__bar {
+.el-slider__bar {
   background-color: #42b983;
 }
-#gen-gif .el-slider__button {
+.el-slider__button {
   border-color: #42b983;
 }
-#gen-gif .el-button--primary {
+.el-button--primary {
   color: #369c6e;
   background: #eaf8f2;
   border: 2px solid #42b983;
 }
-#gen-gif .el-button--primary:hover {
+.el-button--primary:hover {
   color: #fff;
   background: #42b983;
   border: 1px solid #42b983;
 }
-#gen-gif .el-switch.is-checked .el-switch__core {
+.el-switch.is-checked .el-switch__core {
   background-color: #42b983;
   border-color: #42b983;
 }
-#gen-gif .el-input-number__decrease:hover,
-#gen-gif .el-input-number__increase:hover {
+.el-input-number__decrease:hover,
+.el-input-number__increase:hover {
   color: #42b983;
 }
-#gen-gif .el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled),
-#gen-gif .el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
+.el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled),
+.el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
   border-color: #42b983;
+}
+.collection .el-tabs__item:hover {
+  color: #42b983;
 }
 .collection .is-active {
   color: #42b983;
 }
-.collection .el-tabs__item:hover {
-  color: #42b983;
+.maker .el-input-group {
+  border: 1px solid #42b983;
+  border-right: none;
+  border-radius: 5px;
+}
+.maker .el-input-group .el-select {
+  border: none;
+  background-color: #42b983;
+  color: white;
+}
+.maker .el-input-group .el-input-group__append .el-button {
+  border: 1px solid #42b983;
+  background-color: #42b983;
+  color: white;
 }

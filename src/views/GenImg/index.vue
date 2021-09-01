@@ -28,13 +28,13 @@
           >
         </div>
         <div class="tool-box-detail">
-          <span style="margin-bottom: 4px">表情文本内容：</span>
+          <span style="margin-bottom: 6px">表情文本内容：</span>
           <el-input
             v-model="inputText"
             placeholder="请输入要添加的文字"
             style="margin-bottom: 20px"
           ></el-input>
-          <div style="text-align: center">
+          <div style="text-align: center;margin:16px auto">
             <span class="mr-8">字体颜色：</span>
             <el-color-picker
               class="mr-16"
@@ -266,6 +266,19 @@ export default {
 </script>
 <style scoped lang="less">
 .gen-img {
+  padding-bottom: 60px;
+  canvas {
+    max-width: 300px;
+  }
+  .mr-16{
+    vertical-align: middle;
+    margin-right: 40px;
+  }
+  h2 {
+    margin: 20px auto 30px;
+    text-align: center;
+    color: #40a375;
+  }
   .gen-img-content {
     margin: 0 auto;
     width: 50%;
@@ -301,7 +314,7 @@ export default {
             margin: 20px;
             border: 1px solid #42b983;
           }
-          .el-button :hover{
+          .el-button :hover {
             font-weight: 700;
           }
         }
