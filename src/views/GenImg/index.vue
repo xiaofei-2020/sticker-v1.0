@@ -10,7 +10,7 @@
             action=""
             :auto-upload="false"
             :show-file-list="false"
-            accept=".png,.jpg"
+            accept=".png,.jpg,.webp"
             :on-change="handleUploadChange"
             :limit="1"
           >
@@ -24,25 +24,42 @@
             type="text"
             style="margin-left: 10px"
             @click="cancelSel"
-            >取消选择</el-button
+            ><i class="el-icon-circle-close"></i>取消选择</el-button
           >
         </div>
         <div class="tool-box-detail">
-          <p style="margin-bottom: 4px">表情文本内容：</p>
+          <span style="margin-bottom: 6px">表情文本内容：</span>
           <el-input
             v-model="inputText"
             placeholder="请输入要添加的文字"
             style="margin-bottom: 20px"
           ></el-input>
+          <div style="text-align: center;margin:16px auto">
+            <span class="mr-8">字体颜色：</span>
+            <el-color-picker
+              class="mr-16"
+              v-model="fontStyleForm.color"
+              size="mini"
+            ></el-color-picker>
+            <span class="mr-8">字体大小：</span>
+            <el-input-number
+              class="mr-16"
+              v-model="fontStyleForm.fontSize"
+              :min="10"
+              :max="60"
+              label="描述文字"
+              size="mini"
+            ></el-input-number>
+          </div>
           <div class="btn">
             <el-button type="primary" @click="handleGenImg">生成</el-button>
             <el-button type="primary" @click="download">下载</el-button>
-            <el-button v-if="!hasCollect" type="primary" @click="collect"
+            <!-- <el-button v-if="!hasCollect" type="primary" @click="collect"
               >收藏</el-button
             >
             <el-button v-else type="primary" @click="cancelCollect"
               >取消收藏</el-button
-            >
+            > -->
           </div>
         </div>
       </div>
@@ -51,7 +68,7 @@
 </template>
 
 <script>
-import { getResouceById, resourcesApi, collectionApi } from "@/api";
+import { getResouceById, collectionApi } from "@/api";
 export default {
   name: "GenImg",
   components: {},
@@ -61,13 +78,17 @@ export default {
       ctxWidth: 300, // canvas当前宽度
       ctxHeight: 300, // canvas当前高度
       inputText: "", // 表情包的合成文字
-      defaultImgBase64: "", // 用于保存默认模板图的base64
-      currentImgBase64: "", // 当前图片的base64
+      defaultImgSrc: "", // 用于保存默认模板图的src
+      currentImgSrc: "", // 当前图片的src
       curImg: null, // 当前图片元素
       hasChosenImg: false, // 用户是否已经选择了本地图片
       textRowHeight: 50, // 一行文字的高度
       resource_id: "", //
       hasCollect: false,
+      fontStyleForm: {
+        fontSize: 48,
+        color: "#fff",
+      },
     };
   },
   mounted() {
@@ -78,7 +99,7 @@ export default {
     init() {
       this.initCanvas();
       this.initDefImg();
-      this.getUsrCollections();
+      // this.getUsrCollections();
     },
     // 获得用户的collections列表, 判断当前图片是否在该列表中
     getUsrCollections() {
@@ -104,10 +125,10 @@ export default {
     // 初始化默认模板图片
     initDefImg() {
       this.resource_id = this.$route.params.resource_id;
-      getResouceById(this.resource_id).then((res) => {
+      getResouceById(this.resource_id).then(async (res) => {
         if (res.data.success === true) {
-          this.defaultImgBase64 = this.currentImgBase64 = res.data.data.img;
-          this.drawImgFromBase64(this.currentImgBase64);
+          this.defaultImgSrc = this.currentImgSrc = res.data.data.img;
+          this.drawImgFromSrc(this.currentImgSrc);
         }
       });
     },
@@ -120,50 +141,30 @@ export default {
     // 取消选择本地图片, 那就展示默认模板图片
     cancelSel() {
       this.hasChosenImg = false;
-      if (this.defaultImgBase64 !== "") {
-        this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
-        this.drawImg(this.defaultImgBase64);
-      } else {
-        this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
+      this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
+      if (this.defaultImgSrc) {
+        this.drawImgFromSrc(this.defaultImgSrc);
       }
-    },
-    // 上传图片
-    uploadImg(data) {
-      return resourcesApi("post", data).then((res) => {
-        if (res.success === true) {
-          this.$message.success("上传图片成功");
-          this.resource_id = res.resource_id;
-        }
-      });
     },
     // 上传本地图片后触发(只绘图)
     async handleUploadChange(file) {
       this.hasChosenImg = true;
-      this.currentImgBase64 = await this.genBase64(file.raw);
-      const uploadData = {
-        type: "TEMPLATE",
-        account_id: 123456781234567812345678,
-        img: this.currentImgBase64,
-        content: "",
-      };
-      // 上传模板图片
-      this.uploadImg(uploadData);
-
-      this.drawImgFromBase64(this.currentImgBase64);
+      this.currentImgSrc = await this.genBase64(file.raw);
+      this.drawImgFromSrc(this.currentImgSrc);
     },
-    // 根据base64绘图
-    async drawImgFromBase64(base64) {
-      if (!base64 || typeof base64 !== "string") {
+    // 根据base64绘图, 固定片高度, 默认为300, 根据待绘制图片长宽比计算出图片宽度
+    async drawImgFromSrc(src, fixedHeight = 300) {
+      if (!src || typeof src !== "string") {
         return;
       }
 
-      this.curImg = await this.genImgEl(base64);
+      this.curImg = await this.genImgEl(src);
       // 根据图片大小更新canvas的大小
       const widthTemp = this.curImg.width;
       const heightTemp = this.curImg.height;
       const aspectRatio = widthTemp / heightTemp;
-      this.ctxHeight = 300 / aspectRatio;
-      this.updateCanvasSize(300, this.ctxHeight);
+      this.ctxWidth = fixedHeight * aspectRatio;
+      this.updateCanvasSize(this.ctxWidth, this.ctxHeight);
 
       // 绘制图片
       this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
@@ -172,14 +173,14 @@ export default {
       // 清除一下文件, 否则下次再次选择文件时, 不会触发chage事件
       this.$refs.selImgUpload.clearFiles();
     },
-    // 根据base64生成img元素
-    genImgEl(base64) {
+    // 根据src生成img元素
+    genImgEl(src) {
       return new Promise((resolve) => {
         const imgEl = new Image();
         imgEl.onload = () => {
           resolve(imgEl);
         };
-        imgEl.src = base64;
+        imgEl.src = src;
       });
     },
     // 根据img元素在canvas上画出img
@@ -187,17 +188,26 @@ export default {
       this.ctx.drawImage(img, 0, 0, w, h);
     },
     // 根据textArr绘制文字
-    drawText(textArr) {
-      this.ctx.font = "48px serif";
+    drawText(text, options = {}) {
+      const { fontSize = 30, color = "#000" } = options;
+      this.ctx.font = `${fontSize}px serif`;
+      this.ctx.fillStyle = color;
+      this.ctx.strokeStyle = "#000";
       this.ctx.textAlign = "center";
-      this.ctx.textBaseline = "top";
-      textArr.forEach((text, index) => {
-        this.ctx.fillText(
-          text,
-          this.ctxWidth / 2,
-          this.ctxHeight + index * this.textRowHeight
-        );
-      });
+      this.ctx.textBaseline = "bottom";
+      this.ctx.lineWidth = "0.5";
+      this.ctx.fillText(
+        text,
+        this.ctxWidth / 2,
+        this.ctxHeight - 8,
+        this.ctxWidth
+      );
+      this.ctx.strokeText(
+        text,
+        this.ctxWidth / 2, // 水平居中
+        this.ctxHeight - 8,
+        this.ctxWidth
+      );
     },
     // 生成file的base64值
     genBase64(file) {
@@ -217,45 +227,11 @@ export default {
         return;
       }
 
-      // 计算文字所需高度, 并相应地调整canvas大小
-      const textInfo = this.genTextInfo(this.inputText, this.ctxWidth - 10);
-      const totalTextRowHeight = textInfo.length * this.textRowHeight;
-      this.updateCanvasSize(this.ctxWidth, this.ctxHeight + totalTextRowHeight);
-
       this.ctx.clearRect(0, 0, this.ctxWidth, this.ctxHeight);
       this.drawImg(this.curImg, this.ctxWidth, this.ctxHeight);
-      this.drawText(textInfo);
+      this.drawText(this.inputText, this.fontStyleForm);
+    },
 
-      const uploadData = {
-        type: "MEME_IMG",
-        account_id: 123456781234567812345678,
-        img: document.getElementById("gen-img-canvas").toDataURL(),
-        content: this.inputText,
-      };
-      this.uploadImg(uploadData);
-    },
-    /**
-     * 根据text和width, 将文字拆分成多行, 以数组形式表示
-     * 如: '111111111111122222222222233333333' => ['111111111...', '22222222...', '3333...'],
-     * 表示第一行显示'111...', 第二行显示'222...', 第三行显示'333...'
-     */
-    genTextInfo(text, width) {
-      if ((text = text.trim()) === "") {
-        return [];
-      }
-      let res = [];
-      let tempStr = "";
-      for (let char of text) {
-        if (this.ctx.measureText(tempStr + char).width < width) {
-          tempStr += char;
-        } else {
-          res.push(tempStr);
-          tempStr = char;
-        }
-      }
-      res.push(tempStr);
-      return res;
-    },
     // 下载
     download() {
       const link = document.createElement("a");
@@ -290,7 +266,21 @@ export default {
 </script>
 <style scoped lang="less">
 .gen-img {
+  padding-bottom: 60px;
+  canvas {
+    max-width: 300px;
+  }
+  .mr-16{
+    vertical-align: middle;
+    margin-right: 40px;
+  }
+  h2 {
+    margin: 20px auto 30px;
+    text-align: center;
+    color: #40a375;
+  }
   .gen-img-content {
+    margin: 0 auto;
     width: 50%;
     text-align: center;
     #gen-img-canvas {
@@ -302,6 +292,7 @@ export default {
       align-items: center;
       .sel-img-box {
         width: 300px;
+        margin-top: 15px;
         text-align: right;
       }
       .tool-box-detail {
@@ -314,17 +305,17 @@ export default {
           margin-top: 5px;
         }
         .btn {
+          display: flex;
+          justify-content: space-around;
           margin: 5px 30px;
-          height: 80px;
           .el-button {
             background-color: #42b983;
             color: #fff;
-            padding: 10px 20px;
             margin: 20px;
             border: 1px solid #42b983;
           }
           .el-button :hover {
-            font-size: 16px;
+            font-weight: 700;
           }
         }
       }

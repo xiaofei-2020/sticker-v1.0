@@ -34,7 +34,7 @@
         :meme="item"
       />
     </div>
-
+    <!-- v-if="total > pageSize" -->
     <el-pagination
       style="text-align: right"
       background
@@ -68,7 +68,7 @@ export default {
       type: "",
       currentPage: 1,
       pageSize: 20,
-      total: 1000,
+      total: 0,
 
       resultData: [],
       resultKeyword: "", // 搜索结果相关的关键字
@@ -86,15 +86,21 @@ export default {
         }
       }
 
-      let res = await resourcesApi("get", {
-        keyword,
-        type: this.type,
-        page,
-        pageSize: this.pageSize,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          keyword,
+          type: this.type,
+          page,
+          pageSize: this.pageSize,
+        }
+      );
 
       if (res.data.success) {
-        this.resultData = res.data.data;
+        this.resultData = res.data.data.elements || [];
+        this.total = res.data.data.totalElements;
+
         this.resultKeyword = keyword;
         this.page = page;
       }
@@ -141,7 +147,7 @@ export default {
     margin: 30px auto;
     padding-bottom: 20px;
   }
-  .section-title[data-v-6a30d6d7] {
+  .section-title{
     border-bottom: 2px solid #42b983;
     color: #40a375;
     padding-bottom: 10px;

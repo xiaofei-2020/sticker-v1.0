@@ -84,26 +84,34 @@ export default {
   methods: {
     // 获取表情模板
     async getMemeTemplate() {
-      let res = await resourcesApi("get", {
-        type: "TEMPLATE",
-        page: 1,
-        pageSize: 10,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "TEMPLATE",
+          page: 1,
+          pageSize: 10,
+        }
+      );
 
       if (res.data.success) {
-        this.templateList = res.data.data;
+        this.templateList = res.data.data.elements || [];
       }
     },
     // 获取表情图片
     async getMemeProduc() {
-      let res = await resourcesApi("get", {
-        type: "MEME_IMG",
-        page: 1,
-        pageSize: 10,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "MEME_IMG",
+          page: 1,
+          pageSize: 10,
+        }
+      );
 
       if (res.data.success) {
-        this.productList = res.data.data;
+        this.productList = res.data.data.elements || [];
       }
     },
     // 跳转搜索页
@@ -160,7 +168,7 @@ export default {
   section {
     margin: 50px auto 5px;
     padding-bottom: 15px;
-    .section-title[data-v-6a30d6d7] {
+    .section-title {
       border-bottom: 2px solid #42b983;
       color: #40a375;
       padding-bottom: 10px;

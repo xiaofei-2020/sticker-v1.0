@@ -13,19 +13,11 @@ input[type="number"] {
 .el-select .el-input .el-select__caret {
   color: white;
 }
-.el-pagination.is-background .el-pager li:not(.disabled):hover {
-  color: #42b983;
-}
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #42b983;
 }
 .el-pagination {
   margin: 20px auto;
-}
-.meme-card .img-box[data-v-d3e84ae2] {
-  box-shadow: 0 0 5px #dcdfe6;
-  margin-bottom: 6px;
-  height: 124px;
 }
 .el-button--text {
   color: #42b983;
@@ -42,10 +34,11 @@ a :hover {
   color: #606266;
 }
 .el-button--text:focus .el-icon-circle-plus-outline,
-.el-button--text .el-icon-circle-plus-outline {
-  font-size: 18px;
+.el-button--text .el-icon-circle-plus-outline,
+.el-button--text:focus .el-icon-circle-close,
+.el-button--text .el-icon-circle-close {
+  font-size: 16px;
   margin: 0 2px;
-  vertical-align: middle;
 }
 .el-input.is-active .el-input__inner,
 .el-input__inner:focus {
@@ -86,24 +79,52 @@ a :hover {
     background-position: 1316px -1240px;
   }
 }
-.blank {
-  height: 140px;
-  background: url(../img/bg.jpg);
-  animation: bg-move 60s linear infinite;
+.el-slider__bar {
+  background-color: #42b983;
 }
-.not-found {
-  margin: 20px auto;
-  text-align: center;
-  height: 300px;
+.el-slider__button {
+  border-color: #42b983;
 }
-.not-found .bg {
-  height: 180px;
-  background: url(../img/404.jpg) center;
-  margin: auto;
-  opacity: 0.6;
+.el-button--primary {
+  color: #369c6e;
+  background: #eaf8f2;
+  border: 2px solid #42b983;
 }
-.not-found h1 {
-  padding: 20px;
+.el-button--primary:hover {
+  color: #fff;
+  background: #42b983;
+  border: 1px solid #42b983;
+}
+.el-switch.is-checked .el-switch__core {
+  background-color: #42b983;
+  border-color: #42b983;
+}
+.el-input-number__decrease:hover,
+.el-input-number__increase:hover {
   color: #42b983;
-  font-size: 50px;
+}
+.el-input-number__decrease:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled),
+.el-input-number__increase:hover:not(.is-disabled) ~ .el-input .el-input__inner:not(.is-disabled) {
+  border-color: #42b983;
+}
+.collection .el-tabs__item:hover {
+  color: #42b983;
+}
+.collection .is-active {
+  color: #42b983;
+}
+.maker .el-input-group {
+  border: 1px solid #42b983;
+  border-right: none;
+  border-radius: 5px;
+}
+.maker .el-input-group .el-select {
+  border: none;
+  background-color: #42b983;
+  color: white;
+}
+.maker .el-input-group .el-input-group__append .el-button {
+  border: 1px solid #42b983;
+  background-color: #42b983;
+  color: white;
 }

@@ -10,7 +10,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -30,7 +30,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -50,7 +50,7 @@
             :meme="item"
           />
         </div>
-
+        <!-- v-if="typeMap[activeName].total > typeMap[activeName].pageSize" -->
         <el-pagination
           style="text-align: right"
           background
@@ -86,21 +86,21 @@ export default {
 
           currentPage: 1,
           pageSize: 20,
-          total: 100,
+          total: 0,
         },
         TEMPLATE: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
-          total: 70,
+          total: 0,
         },
         MEME_IMG: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
-          total: 30,
+          total: 0,
         },
       },
       activeName: "all",
@@ -115,14 +115,19 @@ export default {
   methods: {
     // 获取收藏
     async getCollection() {
-      let res = await collectionApi("get", {
-        type: this.activeName,
-        page: this.typeMap[this.activeName].currentPage,
-        pageSize: this.typeMap[this.activeName].pageSize,
-      });
+      let res = await collectionApi(
+        "get",
+        {},
+        {
+          type: this.activeName,
+          page: this.typeMap[this.activeName].currentPage,
+          pageSize: this.typeMap[this.activeName].pageSize,
+        }
+      );
 
       if (res.data.success) {
-        this.typeMap[this.activeName].imgList = res.data.data;
+        this.typeMap[this.activeName].imgList = res.data.data.elements;
+        this.typeMap[this.activeName].total = res.data.data.totalElements;
       }
     },
     handleClickTab(tab) {
@@ -143,6 +148,7 @@ export default {
 <style lang="less" scoped>
 .collection {
   padding-bottom: 30px;
+  padding-top: 20px;
   .meme-list {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -150,7 +156,7 @@ export default {
     margin: 30px auto;
     padding-bottom: 20px;
   }
-  .section-title[data-v-6a30d6d7] {
+  .section-title {
     border-bottom: 2px solid #42b983;
     color: #40a375;
     padding-bottom: 10px;

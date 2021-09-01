@@ -26,12 +26,12 @@
             type="text"
             style="margin-left: 10px"
             @click="cancelSelect"
-            >取消选择</el-button
+            ><i class="el-icon-circle-close"></i>取消选择</el-button
           >
         </div>
       </div>
       <div class="img-box" v-if="currentFramePreview">
-        <h2>逐帧查看</h2>
+        <h2><i class="el-icon-s-operation"></i> 逐帧查看</h2>
         <img :src="currentFramePreview" alt="" />
         <!-- <img 
           v-for="(imgItem,imgIndex) in frameList" 
@@ -97,23 +97,25 @@
           </template>
         </div>
       </div>
-      <div
-        v-if="currentFramePreview"
-        class="flex ai-c"
-        style="margin: 4px 0 16px 0"
-      >
-        <el-button
-          class="el-add-text-btn"
-          type="primary"
-          icon="el-icon-plus"
-          plain
-          @click="handleAddText"
-          >添加内容</el-button
+      <div class="add-btn">
+        <div
+          v-if="currentFramePreview"
+          class="flex ai-c"
+          style="margin: 4px 0 16px 0"
         >
-        <div class="flex ai-c">
-          <label for="blackRect" style="margin: 0 8px">添加黑边</label>
-          <el-switch id="blackRect" v-model="gifMetaData.blackRect">
-          </el-switch>
+          <el-button
+            class="el-add-text-btn"
+            type="primary"
+            icon="el-icon-plus"
+            plain
+            @click="handleAddText"
+            >添加内容</el-button
+          >
+          <div class="flex ai-c h50">
+            <label for="blackRect" style="margin: 0 8px">添加黑边</label>
+            <el-switch id="blackRect" v-model="gifMetaData.blackRect">
+            </el-switch>
+          </div>
         </div>
       </div>
 
@@ -134,7 +136,7 @@
           ></el-input-number>
           <!-- </div>
         <div> -->
-          <label for="strokeWidth">文字描边</label>
+          <label for="strokeWidth" class="text-r20">文字描边</label>
           <el-input-number
             id="strokeWidth"
             size="mini"
@@ -179,6 +181,7 @@ import { getBase64 } from "@/utils/common.js";
 import GIF from "../../public/gif.js";
 import { getFile } from "@/api";
 // import GIF from "@/assets/js/gif.js";
+import { getResouceById } from "@/api";
 
 export default {
   name: "GenGif",
@@ -291,6 +294,14 @@ export default {
       // 点击下载
       downloadElement.click();
       // 释放掉blob对象
+    },
+    async getDefaultGif() {
+      let res = await getResouceById(this.$route.params.resource_id);
+
+      if (res.data.success) {
+        this.defaultGif = res.data.data.img;
+        this.gifMetaData = res.data.data.content;
+      }
     },
     getGifFrames(gif) {
       return gif
@@ -593,6 +604,17 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
+  .text-r20 {
+    margin-left: 20px;
+  }
+  .add-btn {
+    height: 50px;
+    margin: 30px auto 16px;
+    .h50 {
+      height: 50px;
+      margin-left: 10px;
+    }
+  }
   .btn {
     height: 80px;
     .el-button {
@@ -603,7 +625,7 @@ export default {
       border: 1px solid #42b983;
     }
     .el-button :hover {
-      font-size: 16px;
+      font-weight: 700;
     }
   }
   .gen-gif-preview {
@@ -616,7 +638,7 @@ export default {
     }
     .img-box {
       max-width: 300px;
-      margin-right: 20px;
+      margin-right: 30px;
       &:last-child {
         margin-right: 0;
       }
@@ -628,6 +650,7 @@ export default {
     }
     .action {
       justify-content: flex-end;
+      padding: 0 8px;
     }
   }
   /deep/ .gen-gif-content {
@@ -673,6 +696,14 @@ export default {
     }
     .el-add-text-btn {
       width: 350px;
+      color: #369c6e;
+      background: #eaf8f2;
+      border: 2px solid #42b983;
+    }
+    .el-add-text-btn:hover {
+      color: #fff;
+      background: #42b983;
+      border: 1px solid #42b983;
     }
 
     .text-set-wrap {

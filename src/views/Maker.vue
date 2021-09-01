@@ -22,7 +22,7 @@
         :meme="item"
       />
     </div>
-
+    <!-- v-if="total > pageSize" -->
     <el-pagination
       style="text-align: right"
       background
@@ -57,7 +57,7 @@ export default {
       type: "",
       currentPage: 1,
       pageSize: 20,
-      total: 1000,
+      total: 0,
 
       templateList: [],
     };
@@ -65,14 +65,19 @@ export default {
   methods: {
     // 获取表情模板
     async getMemeTemplate() {
-      let res = await resourcesApi("get", {
-        type: "TEMPLATE",
-        page: this.currentPage,
-        pageSize: this.pageSize,
-      });
+      let res = await resourcesApi(
+        "get",
+        {},
+        {
+          type: "TEMPLATE",
+          page: this.currentPage,
+          pageSize: this.pageSize,
+        }
+      );
 
       if (res.data.success) {
-        this.templateList = res.data.data;
+        this.templateList = res.data.data.elements || [];
+        this.total = res.data.data.totalElements;
       }
     },
     // 跳转搜索页
@@ -126,7 +131,7 @@ export default {
     margin: 30px auto;
     padding-bottom: 20px;
   }
-  .section-title[data-v-6a30d6d7] {
+  .section-title{
     border-bottom: 2px solid #42b983;
     color: #40a375;
     padding-bottom: 10px;
