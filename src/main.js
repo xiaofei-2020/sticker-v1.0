@@ -4,7 +4,7 @@ import router from "./router";
 import "./assets/css/base.less";
 import "./assets/css/common.less";
 import "./assets/css/main.less";
-import "./mock";
+// import "./mock";
 
 import {
   Avatar,
@@ -27,7 +27,7 @@ import {
 // 导入axios包
 import axios from "axios";
 // 配置请求根路径
-axios.defaults.baseURL = process.env.VUE_APP_SERVER_STATIC_PATH;
+// axios.defaults.baseURL = process.env.VUE_APP_SERVER_STATIC_PATH;
 // 将axios包挂载到vue原型对象上
 Vue.prototype.$http = axios;
 

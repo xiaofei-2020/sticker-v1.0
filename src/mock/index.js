@@ -14,26 +14,26 @@ function getUserInfo(options) {
 
     data: {
       online: true,
-      token: 'test',
+      token: "test",
       eMail: "123456789@163.com",
     },
   };
 }
 
-function getFile(options) {
-  console.log(options);
-  return {
-    code: 0,
-    msg: "ok",
-    success: true,
+// function getFile(options) {
+//   console.log(options);
+//   return {
+//     code: 0,
+//     msg: "ok",
+//     success: true,
 
-    data: {
-      file: require("../assets/tempImg/1.gif"),
-    },
-  };
-}
+//     data: {
+//       file: require("../assets/tempImg/1.gif"),
+//     },
+//   };
+// }
 
-function list(body){
+function list(body) {
   let data = [];
   if (body.type === "TEMPLATE") {
     for (let i = 1; i <= body.pageSize; i++) {
@@ -64,7 +64,7 @@ function list(body){
     }
   }
 
-  return data
+  return data;
 }
 
 function getResources(options) {
@@ -104,13 +104,13 @@ function collection(options) {
     code: 0,
     msg: "ok",
     success: true,
-    data
+    data,
   };
 }
 
 // 拦截 Ajax 请求
 Mock.mock(baseURL + "/userInfo", "get", getUserInfo);
-Mock.mock(baseURL + "/file", "get", getFile);
+// Mock.mock(baseURL + "/file", "get", getFile);
 Mock.mock(baseURL + "/resources", "get", getResources);
 Mock.mock(baseURL + "/collection", "get", collection);
 Mock.mock(baseURL + "/resources/2", "get", getResourceById);

@@ -169,6 +169,7 @@
         <img :src="fItem" alt="" />
       </li>
     </ul> -->
+    <!-- <el-button @click="getFile1">试试</el-button> -->
   </div>
 </template>
 
@@ -176,6 +177,7 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
 import GIF from "../../public/gif.js";
+import { getFile } from "@/api";
 // import GIF from "@/assets/js/gif.js";
 
 export default {
@@ -268,6 +270,27 @@ export default {
         value = max;
       }
       return value;
+    },
+    async getFile1(url) {
+      // url = 'https://img2.baidu.com/it/u=4095081550,1465270391&fm=15&fmt=auto&gp=0.jpg';
+      url =
+        "https://sf1-ttcdn-tos.pstatp.com/obj/larkcloud-file-storage/baas/qcjdye/60023af9a3e3d6d4_1630421743105.png";
+      let res = await getFile({}, { src: url });
+      console.log(res.data);
+      // 拿到二进制字符串 res.data
+      // 再利用 Buffer 转为对象
+      const buf = Buffer.from(res.data, "binary");
+      let blob = new Blob([buf]);
+      // let blob = new Blob([res.data], {type: 'application/octet-stream'});
+      let downloadElement = document.createElement("a");
+      // 创建下载的链接
+      let href = window.URL.createObjectURL(blob);
+      downloadElement.href = href;
+      // 下载后文件名
+      downloadElement.download = url.split("/").pop();
+      // 点击下载
+      downloadElement.click();
+      // 释放掉blob对象
     },
     getGifFrames(gif) {
       return gif

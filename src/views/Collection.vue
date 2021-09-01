@@ -63,7 +63,6 @@
         </el-pagination>
       </el-tab-pane>
     </el-tabs>
-    
   </div>
 </template>
 
@@ -82,23 +81,23 @@ export default {
   data() {
     return {
       typeMap: {
-        "all" :{
+        all: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
           total: 100,
         },
-        "TEMPLATE" :{
+        TEMPLATE: {
           imgList: [],
 
           currentPage: 1,
           pageSize: 20,
           total: 70,
         },
-        "MEME_IMG" :{
+        MEME_IMG: {
           imgList: [],
-          
+
           currentPage: 1,
           pageSize: 20,
           total: 30,
@@ -126,7 +125,7 @@ export default {
         this.typeMap[this.activeName].imgList = res.data.data;
       }
     },
-    handleClickTab(tab){
+    handleClickTab(tab) {
       console.log(tab);
       this.getCollection();
     },
