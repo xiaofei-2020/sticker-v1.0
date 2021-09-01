@@ -1,0 +1,80 @@
+.flex {
+  display: flex;
+}
+
+.jc-sb {
+  justify-content: space-between;
+}
+
+.jc-c {
+  justify-content: center;
+}
+
+.ai-c {
+  align-items: center;
+}
+
+.ai-e {
+  align-items: flex-end;
+}
+
+.grid {
+  display: grid;
+}
+
+@blue: #409EFF;
+@green: #67C23A;
+@yellow: #E6A23C;
+@red: #F56C6C;
+@gray: #909399;
+
+.bg-blue {
+  background-color: @blue;
+}
+.bg-green {
+  background-color: @green;
+}
+.bg-yellow {
+  background-color: @yellow;
+}
+.bg-red {
+  background-color: @red;
+}
+.bg-gray {
+  background-color: @gray;
+}
+
+.mr-8{
+  margin-right: 8px;
+}
+.mr-12{
+  margin-right: 12px;
+}
+.mr-16{
+  margin-right: 16px;
+}
+
+.icon{
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
+  width: 16px;
+  height: 16px;
+}
+.icon-star-on {
+  .icon();
+  background-image: url('~@/assets/icon/star-on.png');
+}
+.icon-star-off {
+  .icon();
+  background-image: url('~@/assets/icon/star-off.png');
+}
