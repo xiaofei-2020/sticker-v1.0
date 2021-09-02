@@ -15,13 +15,11 @@
           <el-form-item label="密码" prop="psd">
             <el-input v-model="LoginForm.psd" type="password"></el-input>
           </el-form-item>
-          
 
           <el-form-item class="btns">
-            <el-button type="primary" @click="login">登录</el-button
-            >
+            <el-button type="primary" @click="login">登录</el-button>
             <a href="/register" class="site-logo">
-              <el-button type="info" >注册</el-button>
+              <el-button type="info">注册</el-button>
             </a>
           </el-form-item>
         </el-form>
@@ -30,7 +28,8 @@
   </div>
 </template>
 <script>
-import "@/utils/jsencrypt.js";
+// import "@/utils/jsencrypt.js";
+import JSEncrypt from 'jsencrypt';
 
 export default {
   name: "Login",
@@ -56,7 +55,6 @@ export default {
             trigger: "blur",
           },
         ],
-       
       },
     };
   },
@@ -82,7 +80,6 @@ export default {
 
           console.log("register_res是什么：", res);
         }
-        
       });
     },
   },
@@ -124,18 +121,3 @@ export default {
   }
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

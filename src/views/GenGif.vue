@@ -406,7 +406,7 @@ export default {
       this.currentFrameIndex = 0;
       this.frameList = [];
     },
-    changeFrame(newValue) {
+    changeFrame() {
       // console.log(newValue);
       this.currentFramePreview = "";
       // console.log(this.currentFrameIndex);

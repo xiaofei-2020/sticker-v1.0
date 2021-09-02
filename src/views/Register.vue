@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-import "@/utils/jsencrypt.js";
+import JSEncrypt from 'jsencrypt';
 
 export default {
   name: "Register",
@@ -100,7 +100,7 @@ export default {
   methods: {
     sendMsg() {
       let that = this;
-      this.$refs.ruleForm.validateField("email", async (valid) => {
+      this.$refs.ruleForm.validateField("email", async (/*valid*/) => {
         const { data: res } = await this.$http.post("/verify_code", {
           type: "REGIST",
           account_email: that.RegisterForm.email,
