@@ -3,10 +3,15 @@ import axios from "axios";
 // 默认请求配置
 axios.defaults.baseURL = process.env.VUE_APP_SERVER_STATIC_PATH;
 // axios.defaults.baseURL = '/api';
+
 // 添加请求拦截器
 axios.interceptors.request.use(
   function (config) {
-    // 在发送请求之前做些什么
+    // 在发送请求之前添加token到请求头
+    let token = sessionStorage.getItem("token");
+    if (token) {
+      config.headers.token = token;
+    }
     return config;
   },
   function (error) {

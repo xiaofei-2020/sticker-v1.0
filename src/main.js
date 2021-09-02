@@ -54,6 +54,23 @@ Vue.prototype.$message = Message;
 Vue.config.productionTip = false;
 
 new Vue({
+  data() {
+    return {
+      userInfo: {},
+    };
+  },
+  methods: {
+    updateUserInfo(data) {
+      this.userInfo = data;
+    },
+    initUserInfo() {
+      this.userInfo.email = sessionStorage.getItem("email");
+      this.userInfo.token = sessionStorage.getItem("token");
+    },
+  },
+  created() {
+    this.initUserInfo();
+  },
   router,
   render: (h) => h(App),
 }).$mount("#app");
