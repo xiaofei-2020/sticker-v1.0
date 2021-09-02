@@ -1,7 +1,5 @@
 <template>
   <div id="gen-gif" class="flex ai-c">
-    <!-- <img src="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" alt=""> -->
-    <!-- <a href="https://www.52doutu.cn/static/temp/pic/27ce6c1211f28cbdb8889b02030a84a0.gif" download="">下载</a> -->
     <div class="gen-gif-preview flex">
       <div class="img-box">
         <h2><i class="el-icon-edit-outline"></i> 表情制作</h2>
@@ -157,21 +155,10 @@
     <section class="gen-gif-font"></section>
 
     <div class="btn">
-      <el-button @click="generateGif">生成</el-button>
+      <el-button v-if="frameList.length" @click="generateGif">生成</el-button>
       <el-button v-if="gif" @click="download(gif, 'file')">下载</el-button>
       <el-button>收藏</el-button>
     </div>
-    <!-- <ul class="frame-list">
-      <li v-for="fItem in frameList" :key="fItem.id">
-        <img :src="fItem.preview" alt="" />
-      </li>
-    </ul> -->
-    <!-- <ul class="frame-list">
-      <li v-for="fItem in test" :key="fItem">
-        <img :src="fItem" alt="" />
-      </li>
-    </ul> -->
-    <!-- <el-button @click="getFile1">试试</el-button> -->
   </div>
 </template>
 
@@ -233,25 +220,6 @@ export default {
         ],
       },
 
-      // content: { // 动态图
-      //   width: 300,
-      //   height: 300,
-      //   textList:[
-      //     { start: 1, end: 10, x: 10, y: 200, color: '#fff', value: '好啊' },
-      //     { start: 11, end: 20, x: 10, y: 200, color: '#fff',  value: '像你这样的群主' },
-      //     { start: 21, end: 30, x: 10, y: 200, color: '#fff',  value: '就算再来十个' },
-      //     { start: 31, end: 40, x: 10, y: 200, color: '#fff',  value: '成千上万个' },
-      //   ]
-      // },
-
-      // content: { // 静态图
-      //   width: 300,
-      //   height: 300,
-      //   textList:[
-      //     { x: 10, y: 200, color: '#fff', value: '在吗' },
-      //   ]
-      // },
-
       currentFramePreview: "", // 当前帧
       currentFrameIndex: 0,
       frameList: [],
@@ -274,15 +242,16 @@ export default {
       }
       return value;
     },
+    // 下载测试
     async getFile1(url) {
       // url = 'https://img2.baidu.com/it/u=4095081550,1465270391&fm=15&fmt=auto&gp=0.jpg';
       url =
         "https://sf1-ttcdn-tos.pstatp.com/obj/larkcloud-file-storage/baas/qcjdye/60023af9a3e3d6d4_1630421743105.png";
       let res = await getFile({}, { src: url });
-      console.log(res.data);
-      // 拿到二进制字符串 res.data
+      console.log(res.data.data);
+      // 拿到二进制字符串 res.data.data
       // 再利用 Buffer 转为对象
-      const buf = Buffer.from(res.data, "binary");
+      const buf = Buffer.from(res.data.data, "binary");
       let blob = new Blob([buf]);
       // let blob = new Blob([res.data], {type: 'application/octet-stream'});
       let downloadElement = document.createElement("a");
@@ -295,20 +264,70 @@ export default {
       downloadElement.click();
       // 释放掉blob对象
     },
-    async getDefaultGif() {
-      let res = await getResouceById(this.$route.params.resource_id);
-
-      if (res.data.success) {
-        this.defaultGif = res.data.data.img;
-        this.gifMetaData = res.data.data.content;
-      }
-    },
     getGifFrames(gif) {
       return gif
         .arrayBuffer()
         .then((buff) => parseGIF(buff))
         .then((gif) => decompressFrames(gif, true));
     },
+    async getDefaultGif() {
+      let res = await getResouceById(this.$route.params.resource_id);
+
+      if (res.data.success) {
+        this.defaultGif = res.data.data.img;
+        this.gifMetaData = JSON.parse(res.data.data.content);
+        this.frameList = await this.urlToBlob(res.data.data.img);
+        this.frameList.forEach((fItem, fIndex) => {
+          // 获得每一帧图以供编辑
+          fItem.id = fIndex;
+          fItem.preview = this.fullFrameToDateURL(fIndex);
+        });
+      }
+    },
+    // 获取二进制格式
+    async urlToBlob(url) {
+      let res = await getFile({}, { src: url });
+      const buf = Buffer.from(res.data.data, "binary");
+      let blob = new Blob([buf]);
+
+      if (res.data.success) {
+        return this.getGifFrames(blob); // 解析gif数据
+      } else {
+        this.$message({
+          message: "获取数据失败，请稍后重试！",
+          type: "error",
+        });
+      }
+    },
+    // 选择图片
+    async handleUploadChange(file) {
+      this.cancelSelect();
+
+      this.customGif = await getBase64(file.raw); // 预览gif
+      this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
+
+      this.gifMetaData.width = this.frameList[0].dims.width;
+      this.gifMetaData.height = this.frameList[0].dims.height;
+
+      this.frameList.forEach((fItem, fIndex) => {
+        // 每一帧图展开预览
+        fItem.id = fIndex;
+        fItem.preview = this.fullFrameToDateURL(fIndex);
+      });
+
+      this.currentFramePreview = this.frameList[0].preview;
+      this.currentFrameIndex = 0;
+
+      this.$refs.upload.clearFiles();
+    },
+    cancelSelect() {
+      this.customGif = "";
+      this.gif = "";
+      this.currentFramePreview = "";
+      this.currentFrameIndex = 0;
+      this.frameList = [];
+    },
+
     renderGif(ctx) {
       // canvas 中播放gif
       this.timer = setInterval(() => {
@@ -412,34 +431,7 @@ export default {
 
       ctx.drawImage(tempCanvas, 0, 0);
     },
-    // 选择图片
-    async handleUploadChange(file) {
-      this.cancelSelect();
 
-      this.customGif = await getBase64(file.raw); // 预览gif
-      this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
-
-      this.gifMetaData.width = this.frameList[0].dims.width;
-      this.gifMetaData.height = this.frameList[0].dims.height;
-
-      this.frameList.forEach((fItem, fIndex) => {
-        // 每一帧图展开预览
-        fItem.id = fIndex;
-        fItem.preview = this.fullFrameToDateURL(fIndex);
-      });
-
-      this.currentFramePreview = this.frameList[0].preview;
-      this.currentFrameIndex = 0;
-
-      this.$refs.upload.clearFiles();
-    },
-    cancelSelect() {
-      this.customGif = "";
-      this.gif = "";
-      this.currentFramePreview = "";
-      this.currentFrameIndex = 0;
-      this.frameList = [];
-    },
     changeFrame(newValue) {
       // console.log(newValue);
       this.currentFramePreview = this.frameList[newValue]?.preview || "";
@@ -597,7 +589,9 @@ export default {
       link.click();
     },
   },
-  created() {},
+  created() {
+    this.getDefaultGif();
+  },
 };
 </script>
 

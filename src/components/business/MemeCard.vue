@@ -80,6 +80,11 @@ export default {
           });
           this.tempCollection = false;
         }
+      } else {
+        this.$message({
+          message: "操作失败，请稍后重试！",
+          type: "error",
+        });
       }
     },
   },
