@@ -83,12 +83,14 @@ export default {
 .meme-card {
   .img-box {
     position: relative;
-    height: 110px;
     border: solid 1px #dcdfe6;
     border-radius: 4px;
     overflow: hidden;
     text-align: center;
     cursor: pointer;
+    box-shadow: 0 0 5px #dcdfe6;
+    margin-bottom: 6px;
+    height: 124px;
     img {
       max-width: 100%;
       height: 100%;

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // 默认请求配置
-axios.defaults.baseURL = process.env.VUE_APP_SERVER_STATIC_PATH;
-
+// axios.defaults.baseURL = process.env.VUE_APP_SERVER_STATIC_PATH;
+// axios.defaults.baseURL = '/api';
 // 添加请求拦截器
 axios.interceptors.request.use(
   function (config) {

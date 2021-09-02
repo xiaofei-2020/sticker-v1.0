@@ -75,6 +75,11 @@ export default {
   // text-align: center;
   color: #303133;
   font-family: "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+  .blank {
+    height: 220px;
+    background: url(../src/assets/img/bg.jpg);
+    animation: bg-move 60s linear infinite;
+  }
   .backtop {
     font-size: 36px;
     text-align: center;
@@ -91,7 +96,7 @@ export default {
       color: #40a375;
     }
   }
-  .backtop:hover{
+  .backtop:hover {
     background-color: rgb(248, 246, 246);
   }
   nav {

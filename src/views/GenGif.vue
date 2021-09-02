@@ -99,24 +99,24 @@
       </div>
       <div class="add-btn">
         <div
-        v-if="currentFramePreview"
-        class="flex ai-c"
-        style="margin: 4px 0 16px 0"
-      >
-        <el-button
-          class="el-add-text-btn"
-          type="primary"
-          icon="el-icon-plus"
-          plain
-          @click="handleAddText"
-          >添加内容</el-button
+          v-if="currentFramePreview"
+          class="flex ai-c"
+          style="margin: 4px 0 16px 0"
         >
-        <div class="flex ai-c h50">
-          <label for="blackRect" style="margin: 0 8px">添加黑边</label>
-          <el-switch id="blackRect" v-model="gifMetaData.blackRect">
-          </el-switch>
+          <el-button
+            class="el-add-text-btn"
+            type="primary"
+            icon="el-icon-plus"
+            plain
+            @click="handleAddText"
+            >添加内容</el-button
+          >
+          <div class="flex ai-c h50">
+            <label for="blackRect" style="margin: 0 8px">添加黑边</label>
+            <el-switch id="blackRect" v-model="gifMetaData.blackRect">
+            </el-switch>
+          </div>
         </div>
-      </div>
       </div>
 
       <template v-if="currentFramePreview">
@@ -171,6 +171,7 @@
         <img :src="fItem" alt="" />
       </li>
     </ul> -->
+    <!-- <el-button @click="getFile1">试试</el-button> -->
   </div>
 </template>
 
@@ -178,6 +179,7 @@
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
 import GIF from "../../public/gif.js";
+import { getFile } from "@/api";
 // import GIF from "@/assets/js/gif.js";
 import { getResouceById } from "@/api";
 
@@ -271,6 +273,27 @@ export default {
         value = max;
       }
       return value;
+    },
+    async getFile1(url) {
+      // url = 'https://img2.baidu.com/it/u=4095081550,1465270391&fm=15&fmt=auto&gp=0.jpg';
+      url =
+        "https://sf1-ttcdn-tos.pstatp.com/obj/larkcloud-file-storage/baas/qcjdye/60023af9a3e3d6d4_1630421743105.png";
+      let res = await getFile({}, { src: url });
+      console.log(res.data);
+      // 拿到二进制字符串 res.data
+      // 再利用 Buffer 转为对象
+      const buf = Buffer.from(res.data, "binary");
+      let blob = new Blob([buf]);
+      // let blob = new Blob([res.data], {type: 'application/octet-stream'});
+      let downloadElement = document.createElement("a");
+      // 创建下载的链接
+      let href = window.URL.createObjectURL(blob);
+      downloadElement.href = href;
+      // 下载后文件名
+      downloadElement.download = url.split("/").pop();
+      // 点击下载
+      downloadElement.click();
+      // 释放掉blob对象
     },
     async getDefaultGif() {
       let res = await getResouceById(this.$route.params.resource_id);
@@ -581,13 +604,13 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
-  .text-r20{
+  .text-r20 {
     margin-left: 20px;
   }
-  .add-btn{
+  .add-btn {
     height: 50px;
     margin: 30px auto 16px;
-    .h50{
+    .h50 {
       height: 50px;
       margin-left: 10px;
     }
@@ -627,7 +650,7 @@ export default {
     }
     .action {
       justify-content: flex-end;
-      padding:0 8px;
+      padding: 0 8px;
     }
   }
   /deep/ .gen-gif-content {
@@ -673,6 +696,14 @@ export default {
     }
     .el-add-text-btn {
       width: 350px;
+      color: #369c6e;
+      background: #eaf8f2;
+      border: 2px solid #42b983;
+    }
+    .el-add-text-btn:hover {
+      color: #fff;
+      background: #42b983;
+      border: 1px solid #42b983;
     }
 
     .text-set-wrap {
