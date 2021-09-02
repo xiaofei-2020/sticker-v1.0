@@ -178,9 +178,9 @@
 <script>
 import { parseGIF, decompressFrames } from "gifuct-js";
 import { getBase64 } from "@/utils/common.js";
-import GIF from "../../public/gif.js";
+// import GIF from "../../public/gif.js";
 import { getFile } from "@/api";
-// import GIF from "@/assets/js/gif.js";
+import GIF from "@/assets/js/gif.js";
 import { getResouceById } from "@/api";
 
 export default {
@@ -500,6 +500,7 @@ export default {
       let gif = new GIF({
         workers: 6,
         quality: 10,
+        workerScript: '../../public/gif.js'
       });
 
       for (let frameIndex in this.frameList) {

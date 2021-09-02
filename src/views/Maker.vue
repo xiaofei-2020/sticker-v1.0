@@ -131,7 +131,7 @@ export default {
     margin: 30px auto;
     padding-bottom: 20px;
   }
-  .section-title{
+  .section-title {
     border-bottom: 2px solid #42b983;
     color: #40a375;
     padding-bottom: 10px;

@@ -34,7 +34,7 @@
             placeholder="请输入要添加的文字"
             style="margin-bottom: 20px"
           ></el-input>
-          <div style="text-align: center;margin:16px auto">
+          <div style="text-align: center; margin: 16px auto">
             <span class="mr-8">字体颜色：</span>
             <el-color-picker
               class="mr-16"
@@ -270,7 +270,7 @@ export default {
   canvas {
     max-width: 300px;
   }
-  .mr-16{
+  .mr-16 {
     vertical-align: middle;
     margin-right: 40px;
   }
