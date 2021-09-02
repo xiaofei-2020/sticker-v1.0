@@ -45,11 +45,11 @@ export default {
     nextRoute(meme) {
       console.log(meme);
 
-      if (meme.resource_type === "TEMPLATE") {
+      if (meme.type === "TEMPLATE") {
         if (meme.img.split(".").pop() === "gif") {
-          this.$router.push("/gen-gif/" + meme.resource_id);
+          this.$router.push("/gen-gif/" + meme._id);
         } else {
-          this.$router.push("/gen-img/" + meme.resource_id);
+          this.$router.push("/gen-img/" + meme._id);
         }
       } else {
         // this.$router.push('/img-detail');

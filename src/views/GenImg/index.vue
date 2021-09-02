@@ -180,6 +180,7 @@ export default {
         imgEl.onload = () => {
           resolve(imgEl);
         };
+        imgEl.setAttribute("crossOrigin", "anonymous");
         imgEl.src = src;
       });
     },
@@ -301,7 +302,7 @@ export default {
             margin: 20px;
             border: 1px solid #42b983;
           }
-          .el-button :hover{
+          .el-button:hover {
             font-weight: 700;
           }
         }

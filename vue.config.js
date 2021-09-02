@@ -20,6 +20,15 @@ module.exports = {
     open: true,
     port: 8080,
     host: "0.0.0.0",
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:3000",
+        changeOrigin: true,
+        pathRewrite: {
+          "^/api": "/api", //重写请求路径
+        },
+      },
+    },
   },
   chainWebpack: (config) => {
     config.module

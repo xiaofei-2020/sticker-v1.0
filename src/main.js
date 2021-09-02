@@ -5,7 +5,7 @@ import "./assets/css/base.less";
 import "./assets/css/common.less";
 import "./assets/css/main.less";
 
-import "./mock"; // 调用后端接口需要把这一行注释
+// import "./mock"; // 调用后端接口需要把这一行注释
 
 import {
   Avatar,
