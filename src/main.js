@@ -5,7 +5,7 @@ import "./assets/css/base.less";
 import "./assets/css/common.less";
 import "./assets/css/main.less";
 
-import "./mock"; // 调用后端接口需要把这一行注释
+// import "./mock"; // 调用后端接口需要把这一行注释
 
 import {
   Avatar,
@@ -54,6 +54,23 @@ Vue.prototype.$message = Message;
 Vue.config.productionTip = false;
 
 new Vue({
+  data(){
+    return {
+      userInfo:{}
+    }
+  },
+  methods:{
+    updateUserInfo(data){
+      this.userInfo = data;
+    },
+    initUserInfo() {
+      this.userInfo.email = sessionStorage.getItem("email");
+      this.userInfo.token = sessionStorage.getItem("token");
+    },
+  },
+  created() {
+    this.initUserInfo();
+  },
   router,
   render: (h) => h(App),
 }).$mount("#app");

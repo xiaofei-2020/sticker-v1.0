@@ -500,7 +500,6 @@ export default {
       let gif = new GIF({
         workers: 6,
         quality: 10,
-        workerScript: '../../public/gif.js'
       });
 
       for (let frameIndex in this.frameList) {

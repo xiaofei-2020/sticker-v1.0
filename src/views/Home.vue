@@ -33,7 +33,7 @@
       <div class="meme-list">
         <MemeCard
           v-for="item in templateList"
-          :key="item.resource_id"
+          :key="item._id"
           :meme="item"
         />
       </div>
@@ -49,7 +49,7 @@
       <div class="meme-list">
         <MemeCard
           v-for="item in productList"
-          :key="item.resource_id"
+          :key="item._id"
           :meme="item"
         />
       </div>

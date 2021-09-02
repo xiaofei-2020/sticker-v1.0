@@ -70,11 +70,20 @@ export default {
           const encryptKey = encrypt.encrypt(that.LoginForm.psd); //使用公钥加密，得到密文
           that.LoginForm.psd = encryptKey; //encryptKey 格式为base64
           const { data: res } = await this.$http.post("/token", that.LoginForm);
+
           if (!res.success) {
             this.loginLoading = false;
             return this.$message.error("登录失败 帐号或密码错误!");
           }
+
           this.$message.success(res.msg);
+
+          this.$root.updateUserInfo({
+            email: this.LoginForm.email,
+            token: res.data
+          });
+
+          sessionStorage.setItem("email", this.LoginForm.email);
           window.sessionStorage.setItem("token", res.data);
           this.$router.push("/");
 

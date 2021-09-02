@@ -133,6 +133,12 @@ export default {
             return this.$message.error("注册失败 帐号或密码错误!");
           }
           this.$message.success(res.msg);
+          
+          this.$root.updateUserInfo({
+            email: this.LoginForm.email,
+            token: res.data
+          });
+          sessionStorage.setItem("email", this.RegisterForm.email);
           window.sessionStorage.setItem("token", res.data);
           this.$router.push("/");
         }

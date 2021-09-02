@@ -12,7 +12,7 @@
           >我的收藏</router-link
         >
       </ul>
-      <div class="user flex">
+      <div v-if="userInfo.token" class="user flex">
         <el-avatar
           :size="50"
           :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"
@@ -22,13 +22,19 @@
             src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
           />
         </el-avatar>
-        <div class="ml-8 flex jc-sb" style="flex-direction: column">
-          <div class="nick-name text-nowrap" :title="userInfo.eMail">
-            {{ userInfo.eMail }}
+        <div  class="ml-8 flex jc-sb" style="flex-direction: column">
+          <div class="nick-name text-nowrap" :title="userInfo.email">
+            {{ userInfo.email }}
           </div>
-          <div class="action"><span class="logout">退出登录</span></div>
+          <div class="action"><span class="logout" @click="handleLogout">退出登录</span></div>
         </div>
+        
       </div>
+      <div v-else class="user">
+          <router-link to="/login">登录</router-link>
+          |
+          <router-link to="/register">注册</router-link>
+        </div>
     </nav>
     <div class="blank"></div>
     <main class="main">
@@ -43,30 +49,30 @@
 </template>
 
 <script>
-import { getUserInfo } from "@/api";
+// import { getUserInfo } from "@/api";
 
 export default {
   name: "App",
   data() {
     return {
-      userInfo: {
-        online: false,
-      },
+      // userInfo: {
+      //   // online: false,
+      // },
     };
   },
+  computed:{
+    userInfo(){
+      return this.$root.userInfo
+    }
+  },
   methods: {
-    async initUserInfo() {
-      let res = await getUserInfo({});
-
-      if (res.data.success) {
-        console.log(res);
-        this.userInfo = res.data.data;
-      }
+    handleLogout(){
+      this.$root.updateUserInfo({});
+      sessionStorage.removeItem("email");
+      sessionStorage.removeItem("token");
     },
   },
-  created() {
-    this.initUserInfo();
-  },
+  
 };
 </script>
 

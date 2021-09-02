@@ -3,7 +3,7 @@
     <div class="img-box" @click="nextRoute(meme)">
       <img :src="meme.img" alt="" />
 
-      <div class="tip" v-if="meme.resource_type === 'TEMPLATE'">
+      <div class="tip" v-if="meme.type === 'TEMPLATE'">
         点击进入表情制作
       </div>
       <!-- <div class="tip" v-else>点击查看表情图片详情</div> -->
@@ -13,13 +13,13 @@
         title="点击收藏"
         class="icon-star-off"
         v-if="!tempCollection"
-        @click="handleCollection('post', meme.resource_id)"
+        @click="handleCollection('post', meme._id)"
       ></i>
       <i
         title="已收藏"
         class="icon-star-on"
         v-if="tempCollection"
-        @click="handleCollection('delete', meme.resource_id)"
+        @click="handleCollection('delete', meme._id)"
       ></i>
     </div>
   </div>
@@ -27,6 +27,8 @@
 
 <script>
 import { collectionApi } from "@/api";
+import formValidator from "@/utils/formValidator.js";
+import { tryCatch } from "@/utils/common.js";
 
 export default {
   name: "meme-card",
@@ -45,11 +47,11 @@ export default {
     nextRoute(meme) {
       console.log(meme);
 
-      if (meme.resource_type === "TEMPLATE") {
+      if (meme.type === "TEMPLATE") {
         if (meme.img.split(".").pop() === "gif") {
-          this.$router.push("/gen-gif/" + meme.resource_id);
+          this.$router.push("/gen-gif/" + meme._id);
         } else {
-          this.$router.push("/gen-img/" + meme.resource_id);
+          this.$router.push("/gen-img/" + meme._id);
         }
       } else {
         // this.$router.push('/img-detail');
@@ -57,6 +59,12 @@ export default {
       }
     },
     async handleCollection(method, id) {
+
+      let [onlineRes] = await tryCatch(formValidator("onlineRule", this.$root.userInfo.token));
+      if (onlineRes === null) {
+        return;
+      }
+
       let res = await collectionApi(method, { id });
 
       if (res.data.success) {

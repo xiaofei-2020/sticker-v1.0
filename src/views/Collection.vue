@@ -72,6 +72,9 @@ import MemeCard from "@/components/business/MemeCard.vue";
 
 import { collectionApi } from "@/api";
 
+import formValidator from "@/utils/formValidator.js";
+import { tryCatch } from "@/utils/common.js";
+
 export default {
   name: "collection",
   components: {
@@ -138,8 +141,18 @@ export default {
     handleCurrentChange() {
       this.getCollection();
     },
+    async isOnline(){
+
+      let [onlineRes] = await tryCatch(formValidator("onlineRule", this.$root.userInfo.token));
+      if (onlineRes === null) {
+        this.$router.push('/login');
+        return;
+      }
+    }
   },
   created() {
+    this.isOnline();
+
     this.getCollection();
   },
 };
