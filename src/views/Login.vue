@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="page-register">
+      <h2><i class="el-icon-edit"></i> 密码登陆</h2>
       <section>
         <el-form
           :model="LoginForm"
@@ -108,6 +109,12 @@ export default {
       width: 980px;
     }
   }
+
+  h2 {
+      margin: 40px auto 20px;
+      text-align: center;
+      color: #40a375;
+    }
 
   > section {
     margin: 0 auto 30px;
