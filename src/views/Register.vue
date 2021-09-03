@@ -1,6 +1,6 @@
 <template>
-  <div>
     <div class="page-register">
+      <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
       <section>
         <el-form
           :model="RegisterForm"
@@ -23,17 +23,16 @@
           <el-form-item label="确认密码" prop="cpsd">
             <el-input v-model="RegisterForm.cpsd" type="password"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="register-btn">
             <el-button type="primary" @click="register"> 注册 </el-button>
             <div class="error">{{ error }}</div>
           </el-form-item>
-          <el-form-item>
-            <a class="f1" href="/" target="_blank">返回</a>
+          <el-form-item class="margin-r">
+            <a class="f1" @click="$router.back()" target="_blank"><i class="el-icon-back"></i> 返回</a>
           </el-form-item>
         </el-form>
       </section>
     </div>
-  </div>
 </template>
 <script>
 import JSEncrypt from "jsencrypt";
@@ -161,6 +160,12 @@ export default {
       width: 980px;
     }
   }
+
+  h2 {
+      margin: 40px auto 20px;
+      text-align: center;
+      color: #40a375;
+    }
 
   > section {
     margin: 0 auto 30px;

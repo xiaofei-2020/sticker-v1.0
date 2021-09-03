@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <div v-else class="user">
+      <div v-else class="user longin-register">
         <router-link to="/login">登录</router-link>
         |
         <router-link to="/register">注册</router-link>
@@ -164,6 +164,16 @@ export default {
     margin: 14px auto;
     // border: solid 1px #42b983;
     box-shadow: 0 0 12px #92c2aa;
+  }
+  .longin-register{
+    a{
+      color: #fff !important;
+      margin: 6px;
+    }
+    a:hover{
+      color: #fff !important;
+      font-weight: 700 !important;
+    }
   }
 }
 </style>

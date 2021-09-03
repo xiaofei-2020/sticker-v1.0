@@ -128,3 +128,43 @@ a :hover {
   background-color: #42b983;
   color: white;
 }
+.page-register .btns .el-form-item__content {
+  margin: 30px auto;
+}
+.page-register .btns .el-form-item__content .el-button--primary {
+  margin: 0 50px 0 100px;
+  color: #fff;
+  background-color: #42b983;
+}
+.page-register .btns .el-form-item__content .el-button--primary:hover {
+  border: 2px solid #42b983;
+  color: #42b983;
+  background-color: #eaf8f2;
+}
+.page-register .btns .el-form-item__content .site-logo .el-button--info {
+  border: 2px solid #909399;
+}
+.page-register .btns .el-form-item__content .site-logo .el-button--info:hover {
+  border: 2px solid #42b983;
+  color: #42b983;
+  background-color: #eaf8f2;
+}
+.page-register .register-btn {
+  margin: 40px auto;
+}
+.page-register .register-btn .el-button--primary {
+  color: #fff;
+  background-color: #42b983;
+  margin: 0 180px;
+}
+.page-register .register-btn .el-button--primary:hover {
+  border: 2px solid #42b983;
+  color: #42b983;
+  background-color: #eaf8f2;
+}
+.page-register a:hover {
+  cursor: pointer;
+}
+.page-register .margin-r {
+  text-align: right;
+}
