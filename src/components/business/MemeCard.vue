@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import { collectionApi } from "@/api";
+import { collectionApi, deleteCollection } from "@/api";
 import formValidator from "@/utils/formValidator.js";
 import { tryCatch } from "@/utils/common.js";
 
@@ -40,6 +40,33 @@ export default {
     return {
       tempCollection: false,
     };
+  },
+  computed: {
+    // tempCollection() {
+    //   if (this.$root.usrCollections) {
+    //     return (
+    //       this.$root.usrCollections.findIndex((c) => {
+    //         return c.resource_id === this.meme._id;
+    //       }) > -1
+    //     );
+    //   }
+    //   return false;
+    // },
+  },
+  watch: {
+    "$root.usrCollections": {
+      handler: function () {
+        if (this.$root.usrCollections) {
+          // 在resource对象中, resourceId对应的属性名是_id, 在collection对象中, resourceId对应的属性名是resource_id
+          const memeId = this.meme.resource_id || this.meme._id;
+          this.tempCollection =
+            this.$root.usrCollections.findIndex((c) => {
+              return c.resource_id === memeId;
+            }) > -1;
+        }
+      },
+      immediate: true,
+    },
   },
   methods: {
     nextRoute(meme) {
@@ -57,6 +84,7 @@ export default {
       }
     },
     async handleCollection(method, id) {
+      // 验证token是否存在
       let [onlineRes] = await tryCatch(
         formValidator("onlineRule", this.$root.userInfo.token)
       );
@@ -64,7 +92,12 @@ export default {
         return;
       }
 
-      let res = await collectionApi(method, { id });
+      let res;
+      if (method === "post") {
+        res = await collectionApi(method, { resource_id: id });
+      } else {
+        res = await deleteCollection(id);
+      }
 
       if (res.data.success) {
         if (method === "post") {

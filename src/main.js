@@ -5,6 +5,7 @@ import "./assets/css/base.less";
 import "./assets/css/common.less";
 import "./assets/css/main.less";
 
+import { collectionApi } from "@/api";
 // import "./mock"; // 调用后端接口需要把这一行注释
 
 import {
@@ -59,6 +60,7 @@ new Vue({
   data() {
     return {
       userInfo: {},
+      usrCollections: [],
     };
   },
   methods: {
@@ -69,9 +71,25 @@ new Vue({
       this.userInfo.email = sessionStorage.getItem("email");
       this.userInfo.token = sessionStorage.getItem("token");
     },
+    async getUsrCollections() {
+      if (this.userInfo.token) {
+        let res = await collectionApi(
+          "get",
+          {},
+          {
+            page: 1,
+            pageSize: 1000,
+          }
+        );
+        if (res.data.success === true) {
+          this.usrCollections = res.data.data.elements;
+        }
+      }
+    },
   },
   created() {
     this.initUserInfo();
+    this.getUsrCollections();
   },
   router,
   render: (h) => h(App),
