@@ -1,5 +1,12 @@
 <template>
-  <div id="gen-gif" class="flex ai-c">
+  <div
+    id="gen-gif"
+    class="flex ai-c"
+    v-loading="loading"
+    element-loading-text="正在生成..."
+    element-loading-spinner="el-icon-loading"
+    element-loading-customClass="loading"
+  >
     <div class="gen-gif-preview flex">
       <div class="img-box">
         <h2><i class="el-icon-edit-outline"></i> 表情制作</h2>
@@ -175,7 +182,8 @@ export default {
   data() {
     return {
       gif: "", // 作品
-      defaultGif: require("@/assets/tempImg/1.gif"), //
+      defaultGif:"",
+      //defaultGif: require("@/assets/tempImg/1.gif"), //
       customGif: "", // 自定义gif
 
       ctx: null,
@@ -193,32 +201,50 @@ export default {
             color: "#fff",
             fontSize: 16,
             strokeWidth: 0.5, // 描边宽度
-            value: "每个月的生活费够用吗？",
-          },
-          {
-            key: 2,
-            start: 12,
-            end: 17,
-            x: 10,
-            y: 200,
-            color: "#fff",
-            fontSize: 16,
-            strokeWidth: 0.5, // 描边宽度
-            value: "够用",
-          },
-          {
-            key: 3,
-            start: 19,
-            end: 24,
-            x: 10,
-            y: 200,
-            color: "#fff",
-            fontSize: 16,
-            strokeWidth: 0.5, // 描边宽度
-            value: "真的吗？",
+            value: "",
           },
         ],
       },
+      // gifMetaData: {
+      //   width: 300,
+      //   height: 300,
+      //   blackRect: true, // 黑边
+      //   textList: [
+      //     {
+      //       key: 1, // 临时key
+      //       start: 2,
+      //       end: 10,
+      //       x: 10,
+      //       y: 200,
+      //       color: "#fff",
+      //       fontSize: 16,
+      //       strokeWidth: 0.5, // 描边宽度
+      //       value: "每个月的生活费够用吗？",
+      //     },
+      //     {
+      //       key: 2,
+      //       start: 12,
+      //       end: 17,
+      //       x: 10,
+      //       y: 200,
+      //       color: "#fff",
+      //       fontSize: 16,
+      //       strokeWidth: 0.5, // 描边宽度
+      //       value: "够用",
+      //     },
+      //     {
+      //       key: 3,
+      //       start: 19,
+      //       end: 24,
+      //       x: 10,
+      //       y: 200,
+      //       color: "#fff",
+      //       fontSize: 16,
+      //       strokeWidth: 0.5, // 描边宽度
+      //       value: "真的吗？",
+      //     },
+      //   ],
+      // },
 
       currentFramePreview: "", // 当前帧
       currentFrameIndex: 0,
@@ -227,6 +253,7 @@ export default {
 
       frameIndex: 0,
       // test: [],
+      loading: false,
     };
   },
   methods: {
@@ -487,6 +514,8 @@ export default {
       });
     },
     async generateGif() {
+      console.log("开始生成");
+      this.loading = true;
       let startTime = new Date().getTime();
 
       let gif = new GIF({
@@ -578,6 +607,7 @@ export default {
         this.gif = await this.blobToBase64(blob);
         let endTime = new Date().getTime();
         console.log(`合成完毕，耗时=${endTime - startTime}毫秒`);
+        this.loading = false;
       });
 
       gif.render();
@@ -598,6 +628,7 @@ export default {
 <style lang="less" scoped>
 #gen-gif {
   flex-direction: column;
+
   .text-r20 {
     margin-left: 20px;
   }
