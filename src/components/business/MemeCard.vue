@@ -6,7 +6,7 @@
       <div class="tip" v-if="meme.type === 'TEMPLATE'">点击进入表情制作</div>
       <!-- <div class="tip" v-else>点击查看表情图片详情</div> -->
     </div>
-    <div class="meme-card-footer">
+    <div class="meme-card-footer flex jc-sb">
       <i
         title="点击收藏"
         class="icon-star-off"
@@ -19,12 +19,18 @@
         v-if="tempCollection"
         @click="handleCollection('delete', meme._id)"
       ></i>
+      <i
+        title="点击下载"
+        style="font-size: 20px"
+        class="el-icon-download"
+        @click="downloadDefaultImg(meme.img)"
+      ></i>
     </div>
   </div>
 </template>
 
 <script>
-import { collectionApi, deleteCollection } from "@/api";
+import { collectionApi, deleteCollection, getFile } from "@/api";
 import formValidator from "@/utils/formValidator.js";
 import { tryCatch } from "@/utils/common.js";
 
@@ -119,6 +125,24 @@ export default {
           type: "error",
         });
       }
+    },
+    // 下载
+    async downloadDefaultImg(url) {
+      let res = await getFile({}, { src: url });
+      // 拿到二进制字符串 res.data.data
+      // 再利用 Buffer 转为对象
+      const buf = Buffer.from(res.data.data, "binary");
+      let blob = new Blob([buf]);
+      // let blob = new Blob([res.data], {type: 'application/octet-stream'});
+      let downloadElement = document.createElement("a");
+      // 创建下载的链接
+      let href = window.URL.createObjectURL(blob);
+      downloadElement.href = href;
+      // 下载后文件名
+      downloadElement.download = url.split("/").pop();
+      // 点击下载
+      downloadElement.click();
+      // 释放掉blob对象
     },
   },
 };

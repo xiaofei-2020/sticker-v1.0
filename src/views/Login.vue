@@ -111,10 +111,10 @@ export default {
   }
 
   h2 {
-      margin: 40px auto 20px;
-      text-align: center;
-      color: #40a375;
-    }
+    margin: 40px auto 20px;
+    text-align: center;
+    color: #40a375;
+  }
 
   > section {
     margin: 0 auto 30px;

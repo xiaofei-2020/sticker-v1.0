@@ -165,12 +165,12 @@ export default {
     // border: solid 1px #42b983;
     box-shadow: 0 0 12px #92c2aa;
   }
-  .longin-register{
-    a{
+  .longin-register {
+    a {
       color: #fff !important;
       margin: 6px;
     }
-    a:hover{
+    a:hover {
       color: #fff !important;
       font-weight: 700 !important;
     }

@@ -1,38 +1,40 @@
 <template>
-    <div class="page-register">
-      <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
-      <section>
-        <el-form
-          :model="RegisterForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="RegisterForm.email"></el-input>
-            <el-button size="mini" @click="sendMsg">发送验证码</el-button>
-            <span class="status">{{ statusMsg }}</span>
-          </el-form-item>
-          <el-form-item label="验证码" prop="code">
-            <el-input v-model="RegisterForm.verify_code"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="psd">
-            <el-input v-model="RegisterForm.psd" type="password"></el-input>
-          </el-form-item>
-          <el-form-item label="确认密码" prop="cpsd">
-            <el-input v-model="RegisterForm.cpsd" type="password"></el-input>
-          </el-form-item>
-          <el-form-item class="register-btn">
-            <el-button type="primary" @click="register"> 注册 </el-button>
-            <div class="error">{{ error }}</div>
-          </el-form-item>
-          <el-form-item class="margin-r">
-            <a class="f1" @click="$router.back()" target="_blank"><i class="el-icon-back"></i> 返回</a>
-          </el-form-item>
-        </el-form>
-      </section>
-    </div>
+  <div class="page-register">
+    <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
+    <section>
+      <el-form
+        :model="RegisterForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="RegisterForm.email"></el-input>
+          <el-button size="mini" @click="sendMsg">发送验证码</el-button>
+          <span class="status">{{ statusMsg }}</span>
+        </el-form-item>
+        <el-form-item label="验证码" prop="code">
+          <el-input v-model="RegisterForm.verify_code"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="psd">
+          <el-input v-model="RegisterForm.psd" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="cpsd">
+          <el-input v-model="RegisterForm.cpsd" type="password"></el-input>
+        </el-form-item>
+        <el-form-item class="register-btn">
+          <el-button type="primary" @click="register"> 注册 </el-button>
+          <div class="error">{{ error }}</div>
+        </el-form-item>
+        <el-form-item class="margin-r">
+          <a class="f1" @click="$router.back()" target="_blank"
+            ><i class="el-icon-back"></i> 返回</a
+          >
+        </el-form-item>
+      </el-form>
+    </section>
+  </div>
 </template>
 <script>
 import JSEncrypt from "jsencrypt";
@@ -162,10 +164,10 @@ export default {
   }
 
   h2 {
-      margin: 40px auto 20px;
-      text-align: center;
-      color: #40a375;
-    }
+    margin: 40px auto 20px;
+    text-align: center;
+    color: #40a375;
+  }
 
   > section {
     margin: 0 auto 30px;

@@ -8,26 +8,26 @@
     element-loading-customClass="loading"
   >
     <div class="gen-gif-preview flex">
-      <div class="img-box">
+      <div class="img-box flex">
         <h2><i class="el-icon-edit-outline"></i> 表情制作</h2>
-        <img :src="gif || customGif || defaultGif" alt="" />
+        <img :src="gif || gifMap[mode].url" alt="" />
         <div class="action flex">
           <el-upload
             ref="upload"
             action=""
             :auto-upload="false"
             :show-file-list="false"
-            accept=".png,.jpg,.gif"
+            accept=".gif"
             :on-change="handleUploadChange"
             :limit="1"
           >
             <el-button type="text"
               ><i class="el-icon-circle-plus-outline"></i
-              >{{ customGif ? "重新选择" : "选择本地图片" }}</el-button
+              >{{ mode === "custom" ? "重新选择" : "选择本地图片" }}</el-button
             >
           </el-upload>
           <el-button
-            v-show="customGif"
+            v-show="mode === 'custom'"
             type="text"
             style="margin-left: 10px"
             @click="cancelSelect"
@@ -35,9 +35,12 @@
           >
         </div>
       </div>
-      <div class="img-box" v-if="currentFramePreview">
+      <div class="img-box flex">
         <h2><i class="el-icon-s-operation"></i> 逐帧查看</h2>
-        <img :src="currentFramePreview" alt="" />
+        <img :src="gifMap[mode].currentFramePreview" alt="" />
+        <p class="flex jc-c ai-c" v-show="!gifMap[mode].currentFramePreview">
+          加载中...
+        </p>
         <!-- <img 
           v-for="(imgItem,imgIndex) in frameList" 
           :key="imgIndex" 
@@ -47,13 +50,21 @@
           <div style="margin-right: 20px">当前帧</div>
           <el-slider
             style="flex: 1"
-            v-model="currentFrameIndex"
-            :max="frameList.length - 1 > 0 ? frameList.length - 1 : 1"
+            v-model="gifMap[mode].currentFrameIndex"
+            :max="
+              gifMap[mode].frameList.length - 1 > 0
+                ? gifMap[mode].frameList.length - 1
+                : 1
+            "
             :format-tooltip="(value) => ++value"
             @input="changeFrame"
           ></el-slider>
           <div style="margin-left: 20px">
-            {{ `${currentFrameIndex + 1} / ${frameList.length}` }}
+            {{
+              `${gifMap[mode].currentFrameIndex + 1} / ${
+                gifMap[mode].frameList.length
+              }`
+            }}
           </div>
         </div>
       </div>
@@ -63,7 +74,7 @@
       <h3>内容编辑</h3>
       <div
         class="text-item"
-        v-for="(item, index) in gifMetaData.textList"
+        v-for="(item, index) in gifMap[mode].metaData.textList"
         :key="item.key"
       >
         <label :for="'text' + index">请输入第 {{ index + 1 }} 句内容</label>
@@ -74,13 +85,17 @@
             v-model="item.value"
             :maxlength="15"
           ></el-input>
-          <template v-if="currentFramePreview">
+          <template>
             <el-input
               class="el-frame-index"
               v-model="item.start"
               type="number"
               @blur="
-                item.start = formatNumber(item.start, 1, frameList.length || 1)
+                item.start = formatNumber(
+                  item.start,
+                  1,
+                  gifMap[mode].frameList.length || 1
+                )
               "
             ></el-input>
             &nbsp;~&nbsp;
@@ -89,7 +104,11 @@
               v-model="item.end"
               type="number"
               @blur="
-                item.end = formatNumber(item.end, 1, frameList.length || 1)
+                item.end = formatNumber(
+                  item.end,
+                  1,
+                  gifMap[mode].frameList.length || 1
+                )
               "
             ></el-input>
             &nbsp;帧
@@ -103,11 +122,7 @@
         </div>
       </div>
       <div class="add-btn">
-        <div
-          v-if="currentFramePreview"
-          class="flex ai-c"
-          style="margin: 4px 0 16px 0"
-        >
+        <div class="flex ai-c" style="margin: 4px 0 16px 0">
           <el-button
             class="el-add-text-btn"
             type="primary"
@@ -118,13 +133,13 @@
           >
           <div class="flex ai-c h50">
             <label for="blackRect" style="margin: 0 8px">添加黑边</label>
-            <el-switch id="blackRect" v-model="gifMetaData.blackRect">
+            <el-switch id="blackRect" v-model="gifMap[mode].metaData.blackRect">
             </el-switch>
           </div>
         </div>
       </div>
 
-      <template v-if="currentFramePreview">
+      <template>
         <h3>文本设置</h3>
         <div class="text-set-wrap">
           <!-- <div class="mr-12"> -->
@@ -134,7 +149,9 @@
             id="fontSize"
             size="mini"
             :value="
-              gifMetaData.textList[0] ? gifMetaData.textList[0].fontSize : 1
+              gifMap[mode].metaData.textList[0]
+                ? gifMap[mode].metaData.textList[0].fontSize
+                : 1
             "
             :min="1"
             @change="(value) => handleChangeTextItem('fontSize', value)"
@@ -146,8 +163,8 @@
             id="strokeWidth"
             size="mini"
             :value="
-              gifMetaData.textList[0]
-                ? gifMetaData.textList[0].strokeWidth
+              gifMap[mode].metaData.textList[0]
+                ? gifMap[mode].metaData.textList[0].strokeWidth
                 : 0.1
             "
             :step="0.1"
@@ -162,9 +179,14 @@
     <section class="gen-gif-font"></section>
 
     <div class="btn">
-      <el-button v-if="frameList.length" @click="generateGif">生成</el-button>
-      <el-button v-if="gif" @click="download(gif, 'file')">下载</el-button>
-      <el-button>收藏</el-button>
+      <el-button v-if="gifMap[mode].frameList.length" @click="generateGif"
+        >生成</el-button
+      >
+      <el-button v-if="gif" @click="download(gif, 'gif')">下载</el-button>
+      <el-button v-else @click="downloadDefaultImg(gifMap[mode].url)"
+        >下载</el-button
+      >
+      <!-- <el-button>收藏</el-button> -->
     </div>
   </div>
 </template>
@@ -182,14 +204,60 @@ export default {
   data() {
     return {
       gif: "", // 作品
-      defaultGif:"",
-      //defaultGif: require("@/assets/tempImg/1.gif"), //
-      customGif: "", // 自定义gif
 
-      ctx: null,
-      gifMetaData: {
-        width: 300,
-        height: 300,
+      mode: "default",
+      gifMap: {
+        default: {
+          url: "",
+          metaData: {
+            blackRect: true, // 黑边
+            textList: [
+              {
+                key: 1, // 临时key
+                start: 2,
+                end: 10,
+                x: 10,
+                y: 200,
+                color: "#fff",
+                fontSize: 16,
+                strokeWidth: 0.5, // 描边宽度
+                value: "",
+              },
+            ],
+          },
+          frameList: [],
+          currentFramePreview: "", // 当前帧
+          currentFrameIndex: 0,
+        },
+        custom: {
+          url: "",
+          metaData: {
+            blackRect: true, // 黑边
+            textList: [
+              {
+                key: 1, // 临时key
+                start: 2,
+                end: 10,
+                x: 10,
+                y: 200,
+                color: "#fff",
+                fontSize: 16,
+                strokeWidth: 0.5, // 描边宽度
+                value: "",
+              },
+            ],
+          },
+          frameList: [],
+          currentFramePreview: "", // 当前帧
+          currentFrameIndex: 0,
+        },
+      },
+      // ===
+      defaultGif: "",
+      defaultmetaData: {},
+
+      customGif: "", // 自定义gif
+      metaData: {
         blackRect: true, // 黑边
         textList: [
           {
@@ -205,55 +273,18 @@ export default {
           },
         ],
       },
-      // gifMetaData: {
-      //   width: 300,
-      //   height: 300,
-      //   blackRect: true, // 黑边
-      //   textList: [
-      //     {
-      //       key: 1, // 临时key
-      //       start: 2,
-      //       end: 10,
-      //       x: 10,
-      //       y: 200,
-      //       color: "#fff",
-      //       fontSize: 16,
-      //       strokeWidth: 0.5, // 描边宽度
-      //       value: "每个月的生活费够用吗？",
-      //     },
-      //     {
-      //       key: 2,
-      //       start: 12,
-      //       end: 17,
-      //       x: 10,
-      //       y: 200,
-      //       color: "#fff",
-      //       fontSize: 16,
-      //       strokeWidth: 0.5, // 描边宽度
-      //       value: "够用",
-      //     },
-      //     {
-      //       key: 3,
-      //       start: 19,
-      //       end: 24,
-      //       x: 10,
-      //       y: 200,
-      //       color: "#fff",
-      //       fontSize: 16,
-      //       strokeWidth: 0.5, // 描边宽度
-      //       value: "真的吗？",
-      //     },
-      //   ],
-      // },
 
       currentFramePreview: "", // 当前帧
       currentFrameIndex: 0,
       frameList: [],
       timer: null,
 
-      frameIndex: 0,
-      // test: [],
+      // frameIndex: 0,
+
       loading: false,
+
+      tempmetaData: {},
+      tempFrameList: [],
     };
   },
   methods: {
@@ -269,13 +300,9 @@ export default {
       }
       return value;
     },
-    // 下载测试
-    async getFile1(url) {
-      // url = 'https://img2.baidu.com/it/u=4095081550,1465270391&fm=15&fmt=auto&gp=0.jpg';
-      url =
-        "https://sf1-ttcdn-tos.pstatp.com/obj/larkcloud-file-storage/baas/qcjdye/60023af9a3e3d6d4_1630421743105.png";
+    // 下载
+    async downloadDefaultImg(url) {
       let res = await getFile({}, { src: url });
-      console.log(res.data.data);
       // 拿到二进制字符串 res.data.data
       // 再利用 Buffer 转为对象
       const buf = Buffer.from(res.data.data, "binary");
@@ -291,6 +318,7 @@ export default {
       downloadElement.click();
       // 释放掉blob对象
     },
+    // 解析gif
     getGifFrames(gif) {
       return gif
         .arrayBuffer()
@@ -301,17 +329,22 @@ export default {
       let res = await getResouceById(this.$route.params.resource_id);
 
       if (res.data.success) {
-        this.defaultGif = res.data.data.img;
-        this.gifMetaData = JSON.parse(res.data.data.content);
-        this.frameList = await this.urlToBlob(res.data.data.img);
-        this.frameList.forEach((fItem, fIndex) => {
-          // 获得每一帧图以供编辑
+        this.gifMap[this.mode].url = res.data.data.img;
+        this.gifMap[this.mode].metaData = JSON.parse(res.data.data.content);
+        this.gifMap[this.mode].frameList = await this.urlToBlob(
+          res.data.data.img
+        );
+        this.gifMap[this.mode].frameList.forEach((fItem, fIndex) => {
+          // 获得每一帧图用来编辑和预览
           fItem.id = fIndex;
           fItem.preview = this.fullFrameToDateURL(fIndex);
         });
+        this.gifMap[this.mode].currentFramePreview =
+          this.gifMap[this.mode].frameList[0].preview;
+        this.gifMap[this.mode].currentFrameIndex = 0;
       }
     },
-    // 获取二进制格式
+    // 获取blob格式
     async urlToBlob(url) {
       let res = await getFile({}, { src: url });
       const buf = Buffer.from(res.data.data, "binary");
@@ -328,64 +361,44 @@ export default {
     },
     // 选择图片
     async handleUploadChange(file) {
-      this.cancelSelect();
+      if (file.raw.type !== "image/gif") {
+        this.$message.warning("请选择 gif 格式的图片！");
+        this.$refs.upload.clearFiles();
+        return;
+      }
 
-      this.customGif = await getBase64(file.raw); // 预览gif
-      this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
+      this.mode = "custom";
+      this.gif = "";
 
-      this.frameList.forEach((fItem, fIndex) => {
-        // 每一帧图展开预览
+      this.gifMap[this.mode].url = await getBase64(file.raw); // 预览gif
+      this.gifMap[this.mode].frameList = await this.getGifFrames(file.raw); // 解析gif数据
+
+      this.gifMap[this.mode].frameList.forEach((fItem, fIndex) => {
+        // 获得每一帧图用来编辑和预览
         fItem.id = fIndex;
         fItem.preview = this.fullFrameToDateURL(fIndex);
       });
 
-      this.currentFramePreview = this.frameList[0].preview;
-      this.currentFrameIndex = 0;
+      this.gifMap[this.mode].currentFramePreview =
+        this.gifMap[this.mode].frameList[0].preview;
+      this.gifMap[this.mode].currentFrameIndex = 0;
 
       this.$refs.upload.clearFiles();
     },
+
     cancelSelect() {
-      this.customGif = "";
       this.gif = "";
-      this.currentFramePreview = "";
-      this.currentFrameIndex = 0;
-      this.frameList = [];
-    },
+      this.gifMap[this.mode].url = "";
+      this.gifMap[this.mode].currentFramePreview = "";
+      this.gifMap[this.mode].currentFrameIndex = 0;
+      this.gifMap[this.mode].frameList = [];
 
-    renderGif(ctx) {
-      // canvas 中播放gif
-      this.timer = setInterval(() => {
-        this.drawPatch(ctx, this.frameList[this.frameIndex]);
-        if (this.frameIndex < this.frameList.length - 1) {
-          this.frameIndex++;
-        } else {
-          this.frameIndex = 0;
-        }
-      }, this.frameList[0].delay);
-    },
-
-    // frame转base64
-    frameToDateURL(frame) {
-      let dims = frame.dims;
-
-      const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.frameList[0].dims.width;
-      tempCanvas.height = this.frameList[0].dims.height;
-      const tempCtx = tempCanvas.getContext("2d");
-
-      tempCtx.putImageData(
-        new ImageData(frame.patch, dims.width, dims.height),
-        dims.left,
-        dims.top
-      );
-      // this.drawPatch(tempCtx, frame);
-
-      return tempCanvas.toDataURL();
+      this.mode = "default";
     },
     fullFrameToDateURL(frameIndex) {
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.frameList[0].dims.width;
-      tempCanvas.height = this.frameList[0].dims.height;
+      tempCanvas.width = this.gifMap[this.mode].frameList[0].dims.width;
+      tempCanvas.height = this.gifMap[this.mode].frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
       this.drawFullFrame(tempCtx, frameIndex);
@@ -397,18 +410,9 @@ export default {
       let dims = frame.dims;
       // console.log(imageData);
       if (frame.disposalType === 1) {
-        // let img = new Image();
-
-        // img.onload = () => {
-        //   ctx.drawImage(img, frame.dims.top , frame.dims.left);
-        // }
-
-        // img.src = this.frameToDateURL(frame);
-        // ----
-
         const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = this.frameList[0].dims.width;
-        tempCanvas.height = this.frameList[0].dims.height;
+        tempCanvas.width = this.gifMap[this.mode].frameList[0].dims.width;
+        tempCanvas.height = this.gifMap[this.mode].frameList[0].dims.height;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.putImageData(
           new ImageData(frame.patch, dims.width, dims.height),
@@ -418,7 +422,12 @@ export default {
 
         ctx.drawImage(tempCanvas, 0, 0);
       } else {
-        ctx.clearRect(0, 0, this.frameList[0].dims.width, this.frameList[0].dims.height);
+        ctx.clearRect(
+          0,
+          0,
+          this.gifMap[this.mode].frameList[0].dims.width,
+          this.gifMap[this.mode].frameList[0].dims.height
+        );
         ctx.putImageData(
           new ImageData(frame.patch, dims.width, dims.height),
           frame.dims.left,
@@ -426,31 +435,17 @@ export default {
         );
       }
     },
-    generateFrame(frame) {
-      const totalPixels = frame.pixels.length;
-      const frameData = new Uint8ClampedArray(totalPixels * 4);
-      for (var i = 0; i < totalPixels; i++) {
-        const pos = i * 4;
-        const colorIndex = frame.pixels[i];
-        const color = frame.colorTable[colorIndex] || [0, 0, 0];
-        frameData[pos] = color[0];
-        frameData[pos + 1] = color[1];
-        frameData[pos + 2] = color[2];
-        frameData[pos + 3] = frame.colorTable[colorIndex] ? 255 : 0;
-      }
 
-      return frameData;
-    },
     // 绘制完整画面
     drawFullFrame(ctx, frameIndex) {
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.frameList[0].dims.width;
-      tempCanvas.height = this.frameList[0].dims.height;
+      tempCanvas.width = this.gifMap[this.mode].frameList[0].dims.width;
+      tempCanvas.height = this.gifMap[this.mode].frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
       for (let i = 0; i <= frameIndex; i++) {
         // 覆盖到目标帧为止
-        this.drawPatch(tempCtx, this.frameList[i]);
+        this.drawPatch(tempCtx, this.gifMap[this.mode].frameList[i]);
       }
 
       ctx.drawImage(tempCanvas, 0, 0);
@@ -458,11 +453,12 @@ export default {
 
     changeFrame(newValue) {
       // console.log(newValue);
-      this.currentFramePreview = this.frameList[newValue]?.preview || "";
+      this.gifMap[this.mode].currentFramePreview =
+        this.gifMap[this.mode].frameList[newValue]?.preview || "";
       // console.log(this.currentFrameIndex);
     },
     handleAddText() {
-      if (!this.gifMetaData.textList[0]) {
+      if (!this.gifMap[this.mode].metaData.textList[0]) {
         let text = {
           key: new Date().getTime(),
           start: 1,
@@ -475,25 +471,27 @@ export default {
           value: "",
         };
 
-        this.gifMetaData.textList.push(text);
+        this.gifMap[this.mode].metaData.textList.push(text);
         return;
       }
       // ================================
-      let text = JSON.parse(JSON.stringify(this.gifMetaData.textList[0]));
+      let text = JSON.parse(
+        JSON.stringify(this.gifMap[this.mode].metaData.textList[0])
+      );
 
       Object.assign(text, {
         key: new Date().getTime(),
         value: "",
       });
 
-      this.gifMetaData.textList.push(text);
+      this.gifMap[this.mode].metaData.textList.push(text);
     },
 
     handleDeleteText(textIndex) {
-      this.gifMetaData.textList.splice(textIndex, 1);
+      this.gifMap[this.mode].metaData.textList.splice(textIndex, 1);
     },
     handleChangeTextItem(key, value) {
-      this.gifMetaData.textList.forEach((item) => {
+      this.gifMap[this.mode].metaData.textList.forEach((item) => {
         item[key] = value;
       });
     },
@@ -515,21 +513,21 @@ export default {
       this.loading = true;
       let startTime = new Date().getTime();
 
+      let gifWidth = this.gifMap[this.mode].frameList[0].dims.width;
+      let gifHeight = this.gifMap[this.mode].frameList[0].dims.height;
+
       let gif = new GIF({
         workers: 6,
         quality: 10,
       });
 
-      for (let frameIndex in this.frameList) {
-        let frame = this.frameList[frameIndex];
+      for (let frameIndex in this.gifMap[this.mode].frameList) {
+        let frame = this.gifMap[this.mode].frameList[frameIndex];
 
         const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = this.frameList[0].dims.width;
-        tempCanvas.height = this.frameList[0].dims.height;
+        tempCanvas.width = gifWidth;
+        tempCanvas.height = gifHeight;
         const tempCtx = tempCanvas.getContext("2d");
-
-        // this.test.push(tempCanvas.toDataURL());
-        // this.test.push(frame.preview)
 
         // 绘制图片
         const loadImg = (base64) => {
@@ -552,33 +550,33 @@ export default {
         tempCtx.drawImage(imgEl, 0, 0);
 
         // 添加黑边================
-        if (this.gifMetaData.blackRect) {
+        if (this.gifMap[this.mode].metaData.blackRect) {
           tempCtx.fillRect(
             0,
-            this.frameList[0].dims.height -
-              (this.gifMetaData.textList[0].fontSize + 10),
-            this.frameList[0].dims.width,
-            this.gifMetaData.textList[0].fontSize + 10
+            gifHeight -
+              (this.gifMap[this.mode].metaData.textList[0].fontSize + 10),
+            gifWidth,
+            this.gifMap[this.mode].metaData.textList[0].fontSize + 10
           );
         }
 
         // =======================
 
         // 绘制文字================
-        let text = this.gifMetaData.textList.find(
+        let text = this.gifMap[this.mode].metaData.textList.find(
           (item) => +item.start <= frameIndex && frameIndex <= +item.end
         );
         if (text) {
           tempCtx.font = `bold ${text.fontSize}px sans-serif`;
 
-          let textWidth = this.frameList[0].dims.width;
+          let textWidth = gifWidth;
 
           tempCtx.textAlign = "center"; // 水平居中
           tempCtx.fillStyle = text.color; // 文字颜色
           tempCtx.fillText(
             text.value,
             textWidth / 2, // 水平居中
-            this.frameList[0].dims.height - 8,
+            gifHeight - 8,
             textWidth
           );
 
@@ -588,7 +586,7 @@ export default {
             tempCtx.strokeText(
               text.value,
               textWidth / 2, // 水平居中
-              this.frameList[0].dims.height - 8,
+              gifHeight - 8,
               textWidth
             );
           }
@@ -660,7 +658,13 @@ export default {
     }
     .img-box {
       max-width: 300px;
+      min-width: 200px;
+      text-align: center;
       margin-right: 30px;
+      flex-direction: column;
+      p {
+        flex: 1;
+      }
       &:last-child {
         margin-right: 0;
       }
