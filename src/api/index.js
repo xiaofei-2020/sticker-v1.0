@@ -77,3 +77,11 @@ export const collectionApi = (method, data, params) => {
     params,
   });
 };
+
+// 取消收藏
+export const deleteCollection = (id) => {
+  return axios({
+    url: "/collection/" + id,
+    method: "delete",
+  });
+};
