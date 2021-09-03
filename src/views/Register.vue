@@ -3,6 +3,7 @@
     <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
     <section>
       <el-form
+        key="register"
         :model="RegisterForm"
         :rules="rules"
         ref="ruleForm"
@@ -106,11 +107,9 @@ export default {
           type: "REGIST",
           account_email: that.RegisterForm.email,
         });
-        console.log("res是什么：", res);
         if (!res.success) {
           return this.$message.error("登录失败 帐号或密码错误!");
         }
-        this.RegisterForm.verify_code = res.code;
         this.$message.success(res.msg);
       });
     },
@@ -123,20 +122,19 @@ export default {
             "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALC6d1bI8gnTcsvBwAu7oVAPfWKM8fYQ\n+Q36jkJdcD8AR3BRf+ZwOMlU7rdm0otQRfgsqJjfg3RwHGfAObPxoXsCAwEAAQ==\n-----END PUBLIC KEY-----"
           );
           const encryptKey = encrypt.encrypt(that.RegisterForm.psd); //使用公钥加密，得到密文
-          that.RegisterForm.psd = encryptKey; //encryptKey 格式为base64
           const { data: res } = await this.$http.post("/account", {
-            psd: that.RegisterForm.psd,
+            psd: encryptKey,
             email: this.RegisterForm.email,
             verify_code: this.RegisterForm.verify_code,
           });
           if (!res.success) {
             this.loginLoading = false;
-            return this.$message.error("注册失败 帐号或密码错误!");
+            return this.$message.error("注册失败!" + res.message);
           }
           this.$message.success(res.msg);
 
           this.$root.updateUserInfo({
-            email: this.LoginForm.email,
+            email: this.RegisterForm.email,
             token: res.data,
           });
           sessionStorage.setItem("email", this.RegisterForm.email);
