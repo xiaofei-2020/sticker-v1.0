@@ -18,6 +18,7 @@ import {
   Pagination,
   Form,
   FormItem,
+  Loading,
   Select,
   Option,
   Tabs,
@@ -43,6 +44,7 @@ Vue.use(Upload);
 Vue.use(Pagination);
 Vue.use(Form);
 Vue.use(FormItem);
+Vue.use(Loading.directive);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Tabs);
