@@ -4,6 +4,7 @@
       <h2><i class="el-icon-edit"></i> 密码登陆</h2>
       <section>
         <el-form
+          key="login"
           :model="LoginForm"
           :rules="rules"
           ref="ruleForm"
@@ -19,9 +20,7 @@
 
           <el-form-item class="btns">
             <el-button type="primary" @click="login">登录</el-button>
-            <a href="/register" class="site-logo">
-              <el-button type="info">注册</el-button>
-            </a>
+            <el-button type="info" @click="goToRegiter">注册</el-button>
           </el-form-item>
         </el-form>
       </section>
@@ -29,7 +28,6 @@
   </div>
 </template>
 <script>
-// import "@/utils/jsencrypt.js";
 import JSEncrypt from "jsencrypt";
 
 export default {
@@ -92,6 +90,9 @@ export default {
         }
       });
     },
+    goToRegiter() {
+      this.$router.push("/register");
+    },
   },
 };
 </script>
@@ -111,10 +112,10 @@ export default {
   }
 
   h2 {
-      margin: 40px auto 20px;
-      text-align: center;
-      color: #40a375;
-    }
+    margin: 40px auto 20px;
+    text-align: center;
+    color: #40a375;
+  }
 
   > section {
     margin: 0 auto 30px;
