@@ -1,38 +1,41 @@
 <template>
-    <div class="page-register">
-      <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
-      <section>
-        <el-form
-          :model="RegisterForm"
-          :rules="rules"
-          ref="ruleForm"
-          label-width="100px"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="RegisterForm.email"></el-input>
-            <el-button size="mini" @click="sendMsg">发送验证码</el-button>
-            <span class="status">{{ statusMsg }}</span>
-          </el-form-item>
-          <el-form-item label="验证码" prop="code">
-            <el-input v-model="RegisterForm.verify_code"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="psd">
-            <el-input v-model="RegisterForm.psd" type="password"></el-input>
-          </el-form-item>
-          <el-form-item label="确认密码" prop="cpsd">
-            <el-input v-model="RegisterForm.cpsd" type="password"></el-input>
-          </el-form-item>
-          <el-form-item class="register-btn">
-            <el-button type="primary" @click="register"> 注册 </el-button>
-            <div class="error">{{ error }}</div>
-          </el-form-item>
-          <el-form-item class="margin-r">
-            <a class="f1" @click="$router.back()" target="_blank"><i class="el-icon-back"></i> 返回</a>
-          </el-form-item>
-        </el-form>
-      </section>
-    </div>
+  <div class="page-register">
+    <h2><i class="el-icon-edit-outline"></i> 注 册</h2>
+    <section>
+      <el-form
+        key="register"
+        :model="RegisterForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="RegisterForm.email"></el-input>
+          <el-button size="mini" @click="sendMsg">发送验证码</el-button>
+          <span class="status">{{ statusMsg }}</span>
+        </el-form-item>
+        <el-form-item label="验证码" prop="code">
+          <el-input v-model="RegisterForm.verify_code"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="psd">
+          <el-input v-model="RegisterForm.psd" type="password"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="cpsd">
+          <el-input v-model="RegisterForm.cpsd" type="password"></el-input>
+        </el-form-item>
+        <el-form-item class="register-btn">
+          <el-button type="primary" @click="register"> 注册 </el-button>
+          <div class="error">{{ error }}</div>
+        </el-form-item>
+        <el-form-item class="margin-r">
+          <a class="f1" @click="$router.back()" target="_blank"
+            ><i class="el-icon-back"></i> 返回</a
+          >
+        </el-form-item>
+      </el-form>
+    </section>
+  </div>
 </template>
 <script>
 import JSEncrypt from "jsencrypt";
@@ -104,11 +107,9 @@ export default {
           type: "REGIST",
           account_email: that.RegisterForm.email,
         });
-        console.log("res是什么：", res);
         if (!res.success) {
           return this.$message.error("登录失败 帐号或密码错误!");
         }
-        this.RegisterForm.verify_code = res.code;
         this.$message.success(res.msg);
       });
     },
@@ -121,20 +122,19 @@ export default {
             "-----BEGIN PUBLIC KEY-----\nMFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALC6d1bI8gnTcsvBwAu7oVAPfWKM8fYQ\n+Q36jkJdcD8AR3BRf+ZwOMlU7rdm0otQRfgsqJjfg3RwHGfAObPxoXsCAwEAAQ==\n-----END PUBLIC KEY-----"
           );
           const encryptKey = encrypt.encrypt(that.RegisterForm.psd); //使用公钥加密，得到密文
-          that.RegisterForm.psd = encryptKey; //encryptKey 格式为base64
           const { data: res } = await this.$http.post("/account", {
-            psd: that.RegisterForm.psd,
+            psd: encryptKey,
             email: this.RegisterForm.email,
             verify_code: this.RegisterForm.verify_code,
           });
           if (!res.success) {
             this.loginLoading = false;
-            return this.$message.error("注册失败 帐号或密码错误!");
+            return this.$message.error("注册失败!" + res.message);
           }
           this.$message.success(res.msg);
 
           this.$root.updateUserInfo({
-            email: this.LoginForm.email,
+            email: this.RegisterForm.email,
             token: res.data,
           });
           sessionStorage.setItem("email", this.RegisterForm.email);
@@ -162,10 +162,10 @@ export default {
   }
 
   h2 {
-      margin: 40px auto 20px;
-      text-align: center;
-      color: #40a375;
-    }
+    margin: 40px auto 20px;
+    text-align: center;
+    color: #40a375;
+  }
 
   > section {
     margin: 0 auto 30px;

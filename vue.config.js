@@ -42,4 +42,5 @@ module.exports = {
     config.output.globalObject("this");
   },
   parallel: false,
+  productionSourceMap: false,
 };
