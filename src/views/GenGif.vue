@@ -333,9 +333,6 @@ export default {
       this.customGif = await getBase64(file.raw); // 预览gif
       this.frameList = await this.getGifFrames(file.raw); // 解析gif数据
 
-      this.gifMetaData.width = this.frameList[0].dims.width;
-      this.gifMetaData.height = this.frameList[0].dims.height;
-
       this.frameList.forEach((fItem, fIndex) => {
         // 每一帧图展开预览
         fItem.id = fIndex;
@@ -372,8 +369,8 @@ export default {
       let dims = frame.dims;
 
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.gifMetaData.width;
-      tempCanvas.height = this.gifMetaData.height;
+      tempCanvas.width = this.frameList[0].dims.width;
+      tempCanvas.height = this.frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
       tempCtx.putImageData(
@@ -387,8 +384,8 @@ export default {
     },
     fullFrameToDateURL(frameIndex) {
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.gifMetaData.width;
-      tempCanvas.height = this.gifMetaData.height;
+      tempCanvas.width = this.frameList[0].dims.width;
+      tempCanvas.height = this.frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
       this.drawFullFrame(tempCtx, frameIndex);
@@ -410,8 +407,8 @@ export default {
         // ----
 
         const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = this.gifMetaData.width;
-        tempCanvas.height = this.gifMetaData.height;
+        tempCanvas.width = this.frameList[0].dims.width;
+        tempCanvas.height = this.frameList[0].dims.height;
         const tempCtx = tempCanvas.getContext("2d");
         tempCtx.putImageData(
           new ImageData(frame.patch, dims.width, dims.height),
@@ -421,7 +418,7 @@ export default {
 
         ctx.drawImage(tempCanvas, 0, 0);
       } else {
-        ctx.clearRect(0, 0, this.gifMetaData.width, this.gifMetaData.height);
+        ctx.clearRect(0, 0, this.frameList[0].dims.width, this.frameList[0].dims.height);
         ctx.putImageData(
           new ImageData(frame.patch, dims.width, dims.height),
           frame.dims.left,
@@ -447,8 +444,8 @@ export default {
     // 绘制完整画面
     drawFullFrame(ctx, frameIndex) {
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.gifMetaData.width;
-      tempCanvas.height = this.gifMetaData.height;
+      tempCanvas.width = this.frameList[0].dims.width;
+      tempCanvas.height = this.frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
       for (let i = 0; i <= frameIndex; i++) {
@@ -527,8 +524,8 @@ export default {
         let frame = this.frameList[frameIndex];
 
         const tempCanvas = document.createElement("canvas");
-        tempCanvas.width = this.gifMetaData.width;
-        tempCanvas.height = this.gifMetaData.height;
+        tempCanvas.width = this.frameList[0].dims.width;
+        tempCanvas.height = this.frameList[0].dims.height;
         const tempCtx = tempCanvas.getContext("2d");
 
         // this.test.push(tempCanvas.toDataURL());
@@ -558,9 +555,9 @@ export default {
         if (this.gifMetaData.blackRect) {
           tempCtx.fillRect(
             0,
-            this.gifMetaData.height -
+            this.frameList[0].dims.height -
               (this.gifMetaData.textList[0].fontSize + 10),
-            this.gifMetaData.width,
+            this.frameList[0].dims.width,
             this.gifMetaData.textList[0].fontSize + 10
           );
         }
@@ -574,14 +571,14 @@ export default {
         if (text) {
           tempCtx.font = `bold ${text.fontSize}px sans-serif`;
 
-          let textWidth = this.gifMetaData.width;
+          let textWidth = this.frameList[0].dims.width;
 
           tempCtx.textAlign = "center"; // 水平居中
           tempCtx.fillStyle = text.color; // 文字颜色
           tempCtx.fillText(
             text.value,
             textWidth / 2, // 水平居中
-            this.gifMetaData.height - 8,
+            this.frameList[0].dims.height - 8,
             textWidth
           );
 
@@ -591,7 +588,7 @@ export default {
             tempCtx.strokeText(
               text.value,
               textWidth / 2, // 水平居中
-              this.gifMetaData.height - 8,
+              this.frameList[0].dims.height - 8,
               textWidth
             );
           }
