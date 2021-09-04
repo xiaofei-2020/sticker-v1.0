@@ -11,13 +11,13 @@
         title="点击收藏"
         class="icon-star-off"
         v-if="!tempCollection"
-        @click="handleCollection('post', meme._id)"
+        @click="handleCollection('post', meme.resource_id)"
       ></i>
       <i
         title="已收藏"
         class="icon-star-on"
         v-if="tempCollection"
-        @click="handleCollection('delete', meme._id)"
+        @click="handleCollection('delete', meme.resource_id)"
       ></i>
       <i
         title="点击下载"
@@ -44,35 +44,28 @@ export default {
   },
   data() {
     return {
-      tempCollection: false,
+      // tempCollection: false,
     };
   },
   computed: {
-    // tempCollection() {
-    //   if (this.$root.usrCollections) {
-    //     return (
-    //       this.$root.usrCollections.findIndex((c) => {
-    //         return c.resource_id === this.meme._id;
-    //       }) > -1
-    //     );
-    //   }
-    //   return false;
-    // },
+    tempCollection() {
+      return this.$root.userCollections.findIndex((c) => c.resource_id === this.meme.resource_id) > -1
+    },
   },
   watch: {
-    "$root.usrCollections": {
-      handler: function () {
-        if (this.$root.usrCollections) {
-          // 在resource对象中, resourceId对应的属性名是_id, 在collection对象中, resourceId对应的属性名是resource_id
-          const memeId = this.meme.resource_id || this.meme._id;
-          this.tempCollection =
-            this.$root.usrCollections.findIndex((c) => {
-              return c.resource_id === memeId;
-            }) > -1;
-        }
-      },
-      immediate: true,
-    },
+    // "$root.userCollections": {
+    //   handler: function () {
+    //     if (this.$root.userCollections) {
+    //       // 在resource对象中, resourceId对应的属性名是_id, 在collection对象中, resourceId对应的属性名是resource_id
+    //       const memeId = this.meme.resource_id || this.meme.resource_id;
+    //       this.tempCollection =
+    //         this.$root.userCollections.findIndex((c) => {
+    //           return c.resource_id === memeId;
+    //         }) > -1;
+    //     }
+    //   },
+    //   immediate: true,
+    // },
   },
   methods: {
     nextRoute(meme) {
@@ -80,9 +73,9 @@ export default {
 
       if (meme.type === "TEMPLATE") {
         if (meme.img.split(".").pop() === "gif") {
-          this.$router.push("/gen-gif/" + meme._id);
+          this.$router.push("/gen-gif/" + meme.resource_id);
         } else {
-          this.$router.push("/gen-img/" + meme._id);
+          this.$router.push("/gen-img/" + meme.resource_id);
         }
       } else {
         // this.$router.push('/img-detail');
@@ -111,13 +104,14 @@ export default {
             message: "收藏成功！",
             type: "success",
           });
-          this.tempCollection = true;
+          this.$root.userCollections.push(this.meme);
         } else if (method === "delete") {
           this.$message({
             message: "取消收藏！",
             type: "warning",
           });
-          this.tempCollection = false;
+          let index = this.$root.userCollections.findIndex((c) => c.resource_id === id)
+          this.$root.userCollections.splice(index,1);
         }
       } else {
         this.$message({

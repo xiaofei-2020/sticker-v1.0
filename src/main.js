@@ -60,7 +60,7 @@ new Vue({
   data() {
     return {
       userInfo: {},
-      usrCollections: [],
+      userCollections: [],
     };
   },
   methods: {
@@ -82,7 +82,7 @@ new Vue({
           }
         );
         if (res.data.success === true) {
-          this.usrCollections = res.data.data.elements;
+          this.userCollections = res.data.data.elements;
         }
       }
     },

@@ -16,7 +16,7 @@
     </div>
     <SectionTitle title="表情图片" describe="发现你要的表情包" />
     <div class="meme-list">
-      <MemeCard v-for="item in productList" :key="item._id" :meme="item" />
+      <MemeCard v-for="item in productList" :key="item.resource_id" :meme="item" />
     </div>
     <!-- v-if="total > pageSize" -->
     <el-pagination
