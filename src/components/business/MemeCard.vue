@@ -49,7 +49,11 @@ export default {
   },
   computed: {
     tempCollection() {
-      return this.$root.userCollections.findIndex((c) => c.resource_id === this.meme.resource_id) > -1
+      return (
+        this.$root.userCollections.findIndex(
+          (c) => c.resource_id === this.meme.resource_id
+        ) > -1
+      );
     },
   },
   watch: {
@@ -110,8 +114,10 @@ export default {
             message: "取消收藏！",
             type: "warning",
           });
-          let index = this.$root.userCollections.findIndex((c) => c.resource_id === id)
-          this.$root.userCollections.splice(index,1);
+          let index = this.$root.userCollections.findIndex(
+            (c) => c.resource_id === id
+          );
+          this.$root.userCollections.splice(index, 1);
         }
       } else {
         this.$message({

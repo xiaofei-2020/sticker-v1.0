@@ -252,39 +252,8 @@ export default {
           currentFrameIndex: 0,
         },
       },
-      // ===
-      defaultGif: "",
-      defaultmetaData: {},
-
-      customGif: "", // 自定义gif
-      metaData: {
-        blackRect: true, // 黑边
-        textList: [
-          {
-            key: 1, // 临时key
-            start: 2,
-            end: 10,
-            x: 10,
-            y: 200,
-            color: "#fff",
-            fontSize: 16,
-            strokeWidth: 0.5, // 描边宽度
-            value: "",
-          },
-        ],
-      },
-
-      currentFramePreview: "", // 当前帧
-      currentFrameIndex: 0,
-      frameList: [],
-      timer: null,
-
-      // frameIndex: 0,
 
       loading: false,
-
-      tempmetaData: {},
-      tempFrameList: [],
     };
   },
   methods: {
@@ -334,11 +303,9 @@ export default {
         this.gifMap[this.mode].frameList = await this.urlToBlob(
           res.data.data.img
         );
-        this.gifMap[this.mode].frameList.forEach((fItem, fIndex) => {
-          // 获得每一帧图用来编辑和预览
-          fItem.id = fIndex;
-          fItem.preview = this.fullFrameToDateURL(fIndex);
-        });
+
+        this.pushPreview(this.gifMap[this.mode].frameList);
+
         this.gifMap[this.mode].currentFramePreview =
           this.gifMap[this.mode].frameList[0].preview;
         this.gifMap[this.mode].currentFrameIndex = 0;
@@ -373,11 +340,7 @@ export default {
       this.gifMap[this.mode].url = await getBase64(file.raw); // 预览gif
       this.gifMap[this.mode].frameList = await this.getGifFrames(file.raw); // 解析gif数据
 
-      this.gifMap[this.mode].frameList.forEach((fItem, fIndex) => {
-        // 获得每一帧图用来编辑和预览
-        fItem.id = fIndex;
-        fItem.preview = this.fullFrameToDateURL(fIndex);
-      });
+      this.pushPreview(this.gifMap[this.mode].frameList);
 
       this.gifMap[this.mode].currentFramePreview =
         this.gifMap[this.mode].frameList[0].preview;
@@ -395,16 +358,7 @@ export default {
 
       this.mode = "default";
     },
-    fullFrameToDateURL(frameIndex) {
-      const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.gifMap[this.mode].frameList[0].dims.width;
-      tempCanvas.height = this.gifMap[this.mode].frameList[0].dims.height;
-      const tempCtx = tempCanvas.getContext("2d");
 
-      this.drawFullFrame(tempCtx, frameIndex);
-
-      return tempCanvas.toDataURL();
-    },
     // 绘制补丁帧
     drawPatch(ctx, frame) {
       let dims = frame.dims;
@@ -435,22 +389,25 @@ export default {
         );
       }
     },
-
-    // 绘制完整画面
-    drawFullFrame(ctx, frameIndex) {
+    // 每一帧绘制预览图
+    pushPreview(frameList) {
+      let startTime = new Date().getTime();
       const tempCanvas = document.createElement("canvas");
-      tempCanvas.width = this.gifMap[this.mode].frameList[0].dims.width;
-      tempCanvas.height = this.gifMap[this.mode].frameList[0].dims.height;
+      tempCanvas.width = frameList[0].dims.width;
+      tempCanvas.height = frameList[0].dims.height;
       const tempCtx = tempCanvas.getContext("2d");
 
-      for (let i = 0; i <= frameIndex; i++) {
-        // 覆盖到目标帧为止
-        this.drawPatch(tempCtx, this.gifMap[this.mode].frameList[i]);
+      for (let i = 0; i < frameList.length; i++) {
+        this.drawPatch(tempCtx, frameList[i]);
+        frameList[i].id = i;
+        frameList[i].preview = tempCanvas.toDataURL();
       }
 
-      ctx.drawImage(tempCanvas, 0, 0);
-    },
+      let endTime = new Date().getTime();
+      console.log(`生成预览图耗时=${endTime - startTime}毫秒`);
 
+      return frameList
+    },
     changeFrame(newValue) {
       // console.log(newValue);
       this.gifMap[this.mode].currentFramePreview =
